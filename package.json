@@ -1,0 +1,12 @@
+{
+  "name": "collabdoc",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo \"use app-level dev scripts\""
+  }
+}

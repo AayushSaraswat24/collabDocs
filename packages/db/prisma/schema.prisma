@@ -1,0 +1,85 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String   @unique
+  emailVerified DateTime?
+  image         String?
+  
+  accounts      Account[]
+
+  documents Document[] @relation("userDocument")
+  collaborations Collaboration[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Document{
+  id String @id @default(cuid())
+  name String
+  content String @default("")
+
+  ownerId String
+  owner User @relation("userDocument",fields: [ownerId],references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  collaborations Collaboration[]
+  documentVersions DocumentVersion[]
+}
+
+model Collaboration{
+  id String @id @default(cuid())
+
+  documentId String 
+  userId String
+  role Role @default(READ)
+
+  user User @relation(fields: [userId],references: [id])
+
+  document Document @relation(fields: [documentId],references: [id])
+
+  @@unique([userId, documentId])
+}
+
+model DocumentVersion{
+  id String @id @default(cuid())
+
+  content String
+  documentId String
+
+  document Document @relation(fields: [documentId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  READ
+  WRITE
+}

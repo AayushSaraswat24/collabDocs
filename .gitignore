@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+packages/**/node_modules/
+
+# env
+.env
+.env.*
+
+# prisma generated client
+packages/db/generated/
+
+# builds
+dist/
+.next/
+
+# logs
+npm-debug.log*
