@@ -16,6 +16,7 @@ model User {
   image         String?
   
   accounts      Account[]
+  sessions      Session[]
 
   documents Document[] @relation("userDocument")
   collaborations Collaboration[]
@@ -40,13 +41,24 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@map("sessions")
+}
+
+
 model Document{
   id String @id @default(cuid())
   name String
   content String @default("")
 
   ownerId String
-  owner User @relation("userDocument",fields: [ownerId],references: [id])
+  owner User @relation("userDocument",fields: [ownerId],references: [id],onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,9 +74,9 @@ model Collaboration{
   userId String
   role Role @default(READ)
 
-  user User @relation(fields: [userId],references: [id])
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 
-  document Document @relation(fields: [documentId],references: [id])
+  document Document @relation(fields: [documentId],references: [id],onDelete: Cascade)
 
   @@unique([userId, documentId])
 }
@@ -75,7 +87,7 @@ model DocumentVersion{
   content String
   documentId String
 
-  document Document @relation(fields: [documentId], references: [id])
+  document Document @relation(fields: [documentId], references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
