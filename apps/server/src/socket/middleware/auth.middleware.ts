@@ -33,8 +33,16 @@ export async function socketAuthMiddleware(
       return next(new Error("Session expired"));
     }
 
+    const user= await prisma.user.findUnique({
+      where:{id:session.userId}
+    });
+
+    if(!user){
+      return next(new Error("User not found"));
+    }
 
     socket.data.userId = session.userId;
+    socket.data.userName=user.name;
 
     next();
   } catch (error) {
