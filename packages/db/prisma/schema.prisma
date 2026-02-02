@@ -107,7 +107,8 @@ model CollaborationInvite{
 
   inviteeId String
   inviterId String
-
+  role Role @default(READ)
+  
   status CollaborationInviteStatus @default(PENDING)
 
   document Document @relation(fields: [documentId],references: [id],onDelete: Cascade)

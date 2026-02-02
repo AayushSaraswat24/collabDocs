@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import {prisma,CollaborationInviteStatus} from "@collabdoc/db"
+import {prisma,CollaborationInviteStatus,Role} from "@collabdoc/db"
 
 export async function POST(request:NextRequest){
     try{
@@ -13,7 +13,7 @@ export async function POST(request:NextRequest){
             }, { status: 401 });
         }
 
-        const {email, documentId }=await request.json();
+        const {email, documentId ,role=Role.READ}=await request.json();
         if(!email || !documentId){
             return NextResponse.json({
                 success:false,
@@ -86,6 +86,7 @@ export async function POST(request:NextRequest){
             update:{
                 status:CollaborationInviteStatus.PENDING,
                 inviterId:session.user.id,
+                role:role
             },
 
             create:{
@@ -93,6 +94,7 @@ export async function POST(request:NextRequest){
                 inviteeId:user.id,
                 inviterId:session.user.id,
                 status:CollaborationInviteStatus.PENDING,
+                role:role
             }
         })
 
