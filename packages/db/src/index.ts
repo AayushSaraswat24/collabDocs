@@ -1,2 +1,2 @@
 export { prisma } from "./prisma";
-export {Role} from "./prisma"
+export {Role,CollaborationInviteStatus} from "./prisma"
