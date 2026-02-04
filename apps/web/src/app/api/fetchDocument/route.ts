@@ -39,6 +39,7 @@ export async function GET(request:NextRequest){
         return NextResponse.json({
             success:true,
             documents,
+            user:session.user,
             message:"Documents fetched successfully"
         },{status:200});
 
