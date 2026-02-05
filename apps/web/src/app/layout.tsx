@@ -28,18 +28,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
       >
+        <div className="flex min-h-screen flex-col overflow-hidden">
+
         <ThemeProvider>
 
         <Provider>
+
           <Navbar />
+
+        <div className="flex flex-col flex-1 overflow-y-auto ">
+
          {children}
 
+        </div>
         </Provider>
 
         </ThemeProvider>
 
+        </div>
       </body>
     </html>
   );
