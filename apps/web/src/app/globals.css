@@ -3,14 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Base app colors */
-body {
-  @apply bg-white text-gray-900;
-}
 
-.dark body {
-  @apply bg-gray-950 text-gray-100;
-}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
