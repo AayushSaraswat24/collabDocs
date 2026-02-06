@@ -28,6 +28,15 @@ export async function POST(request:NextRequest){
 
         const {name}=await request.json();
 
+        if (!name || typeof name !== "string" || name.trim().length === 0) {
+            return NextResponse.json(
+                { success: false, message: "Document name is required" },
+                { status: 400 }
+            );
+        }
+
+        const normalizedName=name.trim();
+
         const documentCount=await prisma.document.count({
             where:{ownerId:user.id}
         })
@@ -42,7 +51,7 @@ export async function POST(request:NextRequest){
         const existingDoc=await prisma.document.findFirst({
             where:{
                 ownerId:user.id,
-                name
+                name:normalizedName
             }
         })
 
@@ -57,7 +66,7 @@ export async function POST(request:NextRequest){
         const document=await prisma.$transaction(async (tx)=>{
             const doc=await tx.document.create({
                 data:{
-                    name,
+                    name:normalizedName,
                     ownerId:user.id,
                     content:""
                 }
@@ -76,7 +85,8 @@ export async function POST(request:NextRequest){
 
         return NextResponse.json({
           success: true,
-          message: "Document created successfully"
+          message: "Document created successfully",
+          document
         }, { status: 201 });
 
     }catch(error){

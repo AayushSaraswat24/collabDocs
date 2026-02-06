@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {api} from "@/lib/api";
 import {DocumentCard,DocumentItem} from "@/components/doc/documentCard";
+import { CreateDocumentDialog } from "@/components/doc/createDocument";
 
 
 export default function DocsPage() {
@@ -12,8 +13,13 @@ export default function DocsPage() {
   const [error, setError] = useState(false);
   const router = useRouter();
 
+  
   useEffect(() => {
-    const fetchDocs = async () => {
+
+    fetchDocs();
+  }, []);
+
+  const fetchDocs = async () => {
       try {
         const res = await api.get("api/fetchDocument");
         setDocuments(res.data.documents);
@@ -23,10 +29,13 @@ export default function DocsPage() {
       } finally {
         setLoading(false);
       }
+
     };
 
-    fetchDocs();
-  }, []);
+
+  const onCreated=async (doc:DocumentItem) => {
+    setDocuments((prevDocs)=>[...prevDocs,doc]);
+  }
 
   const deleteDocument=async (docId:string) =>  {
     try{
@@ -61,11 +70,16 @@ export default function DocsPage() {
   }
 
   return (
-    <div className="p-6 flex-1">
-      <h1 className="mb-4 text-lg font-semibold ">
-        Your Documents
-      </h1>
+    <div className="sm:p-6 p-4 flex-1">
 
+      <div className="mb-4 flex items-center justify-between ">
+        <h1 className="sm:text-lg  font-semibold">
+          Your Documents
+        </h1>
+
+        <CreateDocumentDialog onCreated={onCreated} />
+      </div>
+  
       {documents.length === 0 ? (
         <p className="text-sm text-neutral-500">
           No documents yet.

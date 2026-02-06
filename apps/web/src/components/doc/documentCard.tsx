@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+
 export interface DocumentItem {
   id: string;
   name: string;
@@ -30,6 +31,12 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
       className="group relative cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition hover:shadow-md hover:border-primary/50"
     >
 
+    {!doc.isOwner && (
+      <span className="absolute left-2 top-2 rounded-full bg-blue-100 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-400">
+        SHARED
+      </span>
+    )}
+
       {doc.isOwner && (
         <span className="absolute left-2 top-2 rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs font-semibold text-green-700 dark:text-green-400">
           OWNER
@@ -37,14 +44,14 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
       )}
 
 
-      <h3 className="truncate text-sm font-medium pt-6 pr-8">
+      <h3 className="truncate  text-center text-sm font-medium pt-6 pr-8">
         {doc.name}
       </h3>
 
       {/* Delete Button - Only visible for owners */}
       {doc.isOwner && (
 
-            <AlertDialog>
+        <AlertDialog>
           <AlertDialogTrigger asChild>
 
             <button
