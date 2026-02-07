@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {api} from "@/lib/api";
 import {DocumentCard,DocumentItem} from "@/components/doc/documentCard";
 import { CreateDocumentDialog } from "@/components/doc/createDocument";
+import { InvitesInbox } from "@/components/doc/invite/inviteInbox";
 
 
 export default function DocsPage() {
@@ -34,7 +35,17 @@ export default function DocsPage() {
 
 
   const onCreated=async (doc:DocumentItem) => {
-    setDocuments((prevDocs)=>[...prevDocs,doc]);
+    // if still ui is not working perfectly for docs operations then just add the fetch function calling here .
+    setDocuments(prev => {
+      const exists = prev.some(d => d.id === doc.id);
+
+      if (exists) {
+        return prev.map(d => (d.id === doc.id ? doc : d));
+      }
+
+      return [...prev, doc];
+    });
+
   }
 
   const deleteDocument=async (docId:string) =>  {
@@ -42,13 +53,12 @@ export default function DocsPage() {
      const response=await api.delete("api/deleteDocument",{
         data:{docId}
      })
-     
+
      setDocuments((prevDoc)=> prevDoc.filter((doc)=> doc.id!==docId));
-     // show pop_up on success ,needs to update the ui too that element is gone .
+  
     }catch(error){
       console.log(`Error `,error);
-      // instead of error i want a pop_up here .
-      setError(true);
+      throw error;
     }
   }
 
@@ -72,12 +82,16 @@ export default function DocsPage() {
   return (
     <div className="sm:p-6 p-4 flex-1">
 
-      <div className="mb-4 flex items-center justify-between ">
+      <div className="mb-4 gap-2 flex items-center justify-between ">
         <h1 className="sm:text-lg  font-semibold">
           Your Documents
         </h1>
 
+        <div className="flex sm:gap-4 gap-3">
+        <InvitesInbox />
         <CreateDocumentDialog onCreated={onCreated} />
+        </div>
+
       </div>
   
       {documents.length === 0 ? (
@@ -100,4 +114,3 @@ export default function DocsPage() {
   );
 }
 
-// document card alert dialog box implemented only responsive test is due for that i need to make ui to add document first and after adding 2-3 doc i need to test the responsiveness apart from that i need to implement a kind of aleart that doc is deleted or some other actions too . after that i need to implement invites . we will add shadcn sonner .

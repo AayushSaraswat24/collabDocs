@@ -51,6 +51,7 @@ export function CreateDocumentDialog({
         setOpen(false);
         setName("");
         const doc=response.data.document;
+        console.log(`new Doc ${JSON.stringify(doc)}`)
         onCreated({...doc,isOwner:true});
 
     } catch (err: any) {

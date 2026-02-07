@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { toast } from "sonner";
 
 
 export interface DocumentItem {
@@ -21,7 +22,7 @@ export interface DocumentItem {
 interface DocumentCardProps {
   doc: DocumentItem;
   onClick: () => void;
-  onDelete: (docId: string) => void;
+  onDelete: (docId: string) => Promise<void>;
 }
 
 export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
@@ -79,7 +80,13 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
 
               {/* DELETE */}
               <AlertDialogAction
-                onClick={() => onDelete(doc.id)}
+                onClick={() => 
+                 toast.promise(onDelete(doc.id),{
+                  loading:"Deleting document...",
+                  success:"Document deleted successfully",
+                  error:"Failed to delete document."
+                 })
+                }
                 className="bg-red-600 hover:bg-red-700"
               >
                 Delete

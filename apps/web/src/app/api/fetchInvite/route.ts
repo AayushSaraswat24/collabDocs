@@ -22,7 +22,6 @@ export async function GET(request:NextRequest){
             },
             select:{
                 id:true,
-                documentId:true,
                 inviterId:true,
                 role:true,
 
