@@ -30,18 +30,21 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
       socket.data.documentId = documentId;
       socket.data.role = collaboration.role;
 
-      socket.join(documentId);
-
+      
       const documentData=await prisma.document.findUnique({
         where:{id:documentId}
       })
-
+      
       if(!documentData){
         return ack({ ok: false, error: "DOCUMENT_NOT_FOUND" });
       }
+      
+      socket.join(documentId);
 
       addUser(documentId,userId);
       
+      socket.to(documentId).emit("document:userJoined",{name:socket.data.userName});
+
       return ack({
         ok: true,
         documentId,

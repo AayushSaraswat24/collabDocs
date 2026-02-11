@@ -6,6 +6,7 @@ export async function socketAuthMiddleware(
   next: (err?: Error) => void
 ) {
   try {
+    console.log("New socket connection request ");
     const cookieHeader = socket.request.headers.cookie;
 
     if (!cookieHeader) {
@@ -43,9 +44,10 @@ export async function socketAuthMiddleware(
 
     socket.data.userId = session.userId;
     socket.data.userName=user.name;
-
+    console.log(`Socket authenticated for user ${user.name} (${session.userId})`);
     next();
   } catch (error) {
+    console.error("Socket authentication error:", error);
     next(new Error("Unauthorized"));
   }
 }

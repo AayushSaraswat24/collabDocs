@@ -1,3 +1,11 @@
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
+
+
 import { createServer } from "http";
 import { app } from "./app";
 import { setupSocket } from "./socket/index";
