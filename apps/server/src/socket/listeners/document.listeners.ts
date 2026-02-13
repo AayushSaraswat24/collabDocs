@@ -1,9 +1,12 @@
 import { Server, Socket } from "socket.io";
 import { prisma } from "@collabdoc/db";
 import {Role} from "@collabdoc/db";
-import { bufferDocumentUpdate } from "../../realtime/documentBuffer";
 import { kickUserFromRoom } from "../room.utils";
 import { addUser, getActiveUsers } from "../../realtime/activeUsers";
+import * as Y from "yjs"
+import { attachPersistence } from "../../realtime/documentPersistence";
+
+export const yDocs=new Map<string,Y.Doc>();
 
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 
@@ -15,7 +18,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         return ack({ ok: false, error: "DOCUMENT_ID_REQUIRED" });
       }
 
-      if(!userId){
+      if(!userId || !socket.data.userName){
         return ack({ ok: false, error: "UNAUTHORIZED UserId missing" });
       }
 
@@ -27,19 +30,33 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         return ack({ ok: false, error: "ACCESS_DENIED" });
       }
 
-      socket.data.documentId = documentId;
-      socket.data.role = collaboration.role;
-
-      
+          
       const documentData=await prisma.document.findUnique({
         where:{id:documentId}
       })
+
       
       if(!documentData){
         return ack({ ok: false, error: "DOCUMENT_NOT_FOUND" });
       }
       
+      let ydoc=yDocs.get(documentId);
+
+      if(!ydoc){
+        ydoc=new Y.Doc();
+
+        if(documentData.content){
+          Y.applyUpdate(ydoc,documentData.content);
+        }
+        // attach the event listener on ydoc for yjs update .
+        attachPersistence(documentId,ydoc);
+        yDocs.set(documentId,ydoc);
+      }
+
       socket.join(documentId);
+
+      socket.data.documentId = documentId;
+      socket.data.role = collaboration.role;
 
       addUser(documentId,userId);
       
@@ -50,32 +67,28 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         documentId,
         role: collaboration.role,
         isOwner:documentData.ownerId===userId,
-        content: documentData.content ,
         name:documentData.name,
+        content: documentData.content ? Buffer.from(documentData.content).toString("base64") : null,
       });
     }
 
   );
 
-  socket.on("document:update",({content})=>{
-    const {documentId,userId,role,userName}=socket.data;
+  // webSocket support binary update directly send without base64 encoding .
+  socket.on("yjs:update",(update:Uint8Array)=>{
+    const {documentId,role}=socket.data;
 
-    // once user joined a room my socket have userId ,userName , role ,documentId
-
-    if(!documentId || !userId || !role || !userName){
+    if(!documentId || role!==Role.WRITE){
       return ;
     }
 
-    if(role!==Role.WRITE){
-      return ;
-    }
+    const ydoc=yDocs.get(documentId);
+    if(!ydoc) return;
 
-    socket.to(documentId).emit("document:update:content",{
-      content,
-      updatedBy:userName,
-    })
+    Y.applyUpdate(ydoc,update);
 
-    bufferDocumentUpdate(documentId,content);
+    // emitting to client update listener as socket is directional .
+    socket.to(documentId).emit("yjs:update",update);
   })
 
   
@@ -95,7 +108,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
 });
 
 
-socket.on("document:kick",async ({targetUserId})=>{
+socket.on("document:kick",async ({targetUserId},ack)=>{
 
   const {documentId,userId,role}=socket.data;
 
@@ -113,10 +126,10 @@ socket.on("document:kick",async ({targetUserId})=>{
   });
 
   if(!document || document.ownerId!==userId){
-    socket.emit("document:kick:error",{ 
-      message:"ONLY OWNER CAN KICK USERS", 
+    return ack({
+      ok:false,
+      error:"ONLY OWNER CAN KICK USERS",
     });
-    return ;
   }
 
   await prisma.collaboration.deleteMany({
@@ -127,6 +140,7 @@ socket.on("document:kick",async ({targetUserId})=>{
   })
 
   kickUserFromRoom(io, documentId, targetUserId);
+  socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
 
 })
 
@@ -157,7 +171,7 @@ socket.on("document:kick",async ({targetUserId})=>{
 
   if (collaboration.length === 0) {
     return ack({ ok: false, error: "FORBIDDEN" });
-}
+  }
 
    const activeUsers=getActiveUsers(documentId);
   

@@ -68,7 +68,7 @@ export async function POST(request:NextRequest){
                 data:{
                     name:normalizedName,
                     ownerId:user.id,
-                    content:""
+                    content:null
                 }
             });
 

@@ -51,4 +51,5 @@ export default function DocPage() {
   return null;
 }
 
-// also on bakcend server whnen i turn it on using npm run dev it causing some prisma issue fix it .
+// yjs and tipTap text editior . i think socket server is ok now need to check the next js routes .
+

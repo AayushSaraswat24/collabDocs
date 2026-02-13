@@ -58,7 +58,7 @@ model Session {
 model Document{
   id String @id @default(cuid())
   name String
-  content String @default("")
+  content Bytes?
 
   ownerId String
   owner User @relation("userDocument",fields: [ownerId],references: [id],onDelete: Cascade)
@@ -88,7 +88,7 @@ model Collaboration{
 model DocumentVersion{
   id String @id @default(cuid())
 
-  content String
+  content Bytes?
   documentId String
 
   document Document @relation(fields: [documentId], references: [id],onDelete: Cascade)

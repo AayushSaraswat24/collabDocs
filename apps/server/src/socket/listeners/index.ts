@@ -1,7 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { registerDocumentHandlers } from "./document.listeners";
-import { flushAndClearDocument } from "../../realtime/documentBuffer";
+import { flushAndDestroy } from "../../realtime/documentPersistence";
 import { removeUser } from "../../realtime/activeUsers";
+import { yDocs } from "./document.listeners";
 
 export function registerConnectionHandlers(io: Server) {
   io.on("connection", (socket: Socket) => {
@@ -26,7 +27,12 @@ export function registerConnectionHandlers(io: Server) {
         return ;
       }
 
-      await flushAndClearDocument(documentId);
+      const ydoc=yDocs.get(documentId);
+
+      if(ydoc){
+        yDocs.delete(documentId);
+        await flushAndDestroy(documentId,ydoc);
+      }
     
     });
 
