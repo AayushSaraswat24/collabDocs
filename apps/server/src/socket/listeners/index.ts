@@ -1,8 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { registerDocumentHandlers } from "./document.listeners";
-import { flushAndDestroy } from "../../realtime/documentPersistence";
-import { removeUser } from "../../realtime/activeUsers";
-import { yDocs } from "./document.listeners";
+import {removeUser} from "../../services/document.service";
+
 
 export function registerConnectionHandlers(io: Server) {
   io.on("connection", (socket: Socket) => {
@@ -22,17 +21,6 @@ export function registerConnectionHandlers(io: Server) {
       const room=io.sockets.adapter.rooms.get(documentId);
 
       removeUser(documentId,userId);
-
-      if(room && room.size>0){
-        return ;
-      }
-
-      const ydoc=yDocs.get(documentId);
-
-      if(ydoc){
-        yDocs.delete(documentId);
-        await flushAndDestroy(documentId,ydoc);
-      }
     
     });
 

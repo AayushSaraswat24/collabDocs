@@ -51,5 +51,4 @@ export default function DocPage() {
   return null;
 }
 
-// yjs and tipTap text editior . i think socket server is ok now need to check the next js routes .
-
+// yjs and tipTap text editior . register the new route for revert doc in express and also add middleware to that route .

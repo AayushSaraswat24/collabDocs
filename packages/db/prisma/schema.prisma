@@ -88,11 +88,14 @@ model Collaboration{
 model DocumentVersion{
   id String @id @default(cuid())
 
-  content Bytes?
+  name String ?
+  content Bytes
   documentId String
 
   document Document @relation(fields: [documentId], references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
+
+  @@index([documentId, createdAt])
 }
 
 enum Role {

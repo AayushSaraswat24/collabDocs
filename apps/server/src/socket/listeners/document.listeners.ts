@@ -2,74 +2,79 @@ import { Server, Socket } from "socket.io";
 import { prisma } from "@collabdoc/db";
 import {Role} from "@collabdoc/db";
 import { kickUserFromRoom } from "../room.utils";
-import { addUser, getActiveUsers } from "../../realtime/activeUsers";
 import * as Y from "yjs"
-import { attachPersistence } from "../../realtime/documentPersistence";
-
-export const yDocs=new Map<string,Y.Doc>();
+import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser} from "../../services/document.service";
 
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 
 
   socket.on( "document:join",async ({ documentId }, ack) => {
-      const userId = socket.data.userId;
+    try{
 
+      const userId = socket.data.userId;
+      
       if (!documentId) {
         return ack({ ok: false, error: "DOCUMENT_ID_REQUIRED" });
       }
-
+      
       if(!userId || !socket.data.userName){
         return ack({ ok: false, error: "UNAUTHORIZED UserId missing" });
       }
-
+      
       const collaboration = await prisma.collaboration.findFirst({
         where: { userId, documentId },
       });
-
+      
       if (!collaboration) {
         return ack({ ok: false, error: "ACCESS_DENIED" });
       }
-
-          
+      
+      
       const documentData=await prisma.document.findUnique({
         where:{id:documentId}
       })
-
+      
       
       if(!documentData){
         return ack({ ok: false, error: "DOCUMENT_NOT_FOUND" });
       }
       
-      let ydoc=yDocs.get(documentId);
-
-      if(!ydoc){
-        ydoc=new Y.Doc();
-
-        if(documentData.content){
-          Y.applyUpdate(ydoc,documentData.content);
-        }
-        // attach the event listener on ydoc for yjs update .
-        attachPersistence(documentId,ydoc);
-        yDocs.set(documentId,ydoc);
-      }
+      const state= await loadDocument(documentId);
+      const update=Y.encodeStateAsUpdate(state.ydoc);
 
       socket.join(documentId);
-
+      
       socket.data.documentId = documentId;
       socket.data.role = collaboration.role;
-
+      
       addUser(documentId,userId);
       
       socket.to(documentId).emit("document:userJoined",{name:socket.data.userName});
-
+      
       return ack({
         ok: true,
         documentId,
         role: collaboration.role,
         isOwner:documentData.ownerId===userId,
         name:documentData.name,
-        content: documentData.content ? Buffer.from(documentData.content).toString("base64") : null,
+        content: update,
       });
+
+    }catch(error){
+        
+      console.error("Error in document:join:", {
+        userId: socket.data.userId,
+        documentId,
+        error: error instanceof Error ? error.message : error
+      });
+
+      return ack({ 
+        ok: false, 
+        error: "INTERNAL_ERROR" 
+      });
+
+    }
+
     }
 
   );
@@ -82,10 +87,15 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
       return ;
     }
 
-    const ydoc=yDocs.get(documentId);
-    if(!ydoc) return;
+    if(!update){
+      return;
+    }
 
-    Y.applyUpdate(ydoc,update);
+    const success=applyYjsUpdate(documentId,update);
+
+    if(!success){
+      return;
+    }
 
     // emitting to client update listener as socket is directional .
     socket.to(documentId).emit("yjs:update",update);
@@ -110,37 +120,58 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
 
 socket.on("document:kick",async ({targetUserId},ack)=>{
 
-  const {documentId,userId,role}=socket.data;
+  try{
 
-  if(role===Role.READ){
-    return ;
-  }
-
-  if(!documentId || !userId){
-    return ;
-  }
-
-  const document=await prisma.document.findUnique({
-    where:{id:documentId},
-    select:{ownerId:true},
-  });
-
-  if(!document || document.ownerId!==userId){
-    return ack({
-      ok:false,
-      error:"ONLY OWNER CAN KICK USERS",
-    });
-  }
-
-  await prisma.collaboration.deleteMany({
-    where:{
-      documentId,
-      userId:targetUserId,
+    
+    const {documentId,userId,role}=socket.data;
+    
+    if(role===Role.READ){
+      return ;
     }
-  })
+    
+    if(!documentId || !userId){
+      return ;
+    }
+    
+    const document=await prisma.document.findUnique({
+      where:{id:documentId},
+      select:{ownerId:true},
+    });
+    
+    if(!document || document.ownerId!==userId){
+      return ack({
+        ok:false,
+        error:"ONLY OWNER CAN KICK USERS",
+      });
+    }
+    
+    await prisma.collaboration.deleteMany({
+      where:{
+        documentId,
+        userId:targetUserId,
+      }
+    })
+    
+    kickUserFromRoom(io, documentId, targetUserId);
+    removeUser(documentId,targetUserId);
+    socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
 
-  kickUserFromRoom(io, documentId, targetUserId);
-  socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
+    return ack({
+      ok:true,
+    });
+
+  }catch(error){
+    console.error("Error in document:kick:", {
+      userId: socket.data.userId,
+      documentId: socket.data.documentId,
+      error: error instanceof Error ? error.message : error
+    });
+
+    return ack({
+      ok: false,
+      error: "INTERNAL_ERROR",
+    })
+  }
 
 })
 
