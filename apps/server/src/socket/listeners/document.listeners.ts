@@ -57,7 +57,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         role: collaboration.role,
         isOwner:documentData.ownerId===userId,
         name:documentData.name,
-        content: update,
+        content: Array.from(update),
       });
 
     }catch(error){
@@ -221,6 +221,15 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
   })
 
+  socket.on("document:awareness",({states})=>{
+    const {documentId}=socket.data;
 
+    if(!documentId){
+      return ;
+    }
+
+    socket.to(documentId).emit("document:awareness",{documentId,states});
+
+  })
 
 }

@@ -11,7 +11,7 @@ type JoinState =
       documentId: string;
       role: "READ" | "WRITE";
       isOwner: boolean;
-      content: string;
+      content: Uint8Array;
       docName: string;
     }
   | { status: "error"; error: string };
@@ -45,7 +45,7 @@ export function useDocumentJoin(
         documentId: res.documentId,
         role: res.role,
         isOwner: res.isOwner,
-        content: res.content,
+        content:new Uint8Array(res.content),
         docName: res.name,
       });
     });

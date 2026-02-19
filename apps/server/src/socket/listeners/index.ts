@@ -15,7 +15,7 @@ export function registerConnectionHandlers(io: Server) {
 
     socket.on("disconnect",async () => {
       const {documentId,userId} = socket.data;
-
+      console.log(`Socket disconnected for user ${userId} from document ${documentId}`);
       if(!documentId) return ;
 
       const room=io.sockets.adapter.rooms.get(documentId);

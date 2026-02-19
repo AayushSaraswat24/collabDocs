@@ -14,7 +14,9 @@ export function useSocketConnection() {
 
   useEffect(() => {
 
-    socket.connect();
+    if(!socket.connected){
+      socket.connect();
+    }
 
     const onConnect = () => setStatus("connected");
     const onDisconnect = () => setStatus("disconnected");
