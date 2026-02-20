@@ -25,35 +25,44 @@ export default function DocPage() {
 
     // awareness is yjs function to track all the users cursor position and by passing it to tiptap it render cursor . we pass awareness to tipTap for rendering and updating user cursor position and attach listener to awareness to send updates to server and also listen them to apply to show other user cursor positon .
 
-  const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
+//   const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
 
-  useEffect(() => {
-  if (!session?.user) return;
+//   useEffect(() => {
+//   if (!session?.user) return;
 
-  awareness.setLocalStateField("user", {
-    id: session.user.id,
-    name: session.user.name,
-    color: getRandomColor(),
-  });
-}, [session?.user?.id, session?.user?.name]);
-
-
-  useEffect(() => {
-    if(joinState.status === "ready"){
-      Y.applyUpdate(ydoc, joinState.content);
-
-    }
-  }, [joinState, ydoc]);
+//   awareness.setLocalStateField("user", {
+//     id: session.user.id,
+//     name: session.user.name,
+//     color: getRandomColor(),
+//   });
+// }, [session?.user?.id, session?.user?.name]);
 
 
-  useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc, awareness);
+useEffect(() => {
+  if (joinState.status !== "ready") return;
 
-  useEffect(() => {
-    return () => {
-      ydoc.destroy();
-      awareness.destroy();
-    };
-  }, [ydoc,awareness]);
+  if (!joinState.content) return;
+  
+  if(socketStatus !== "connected") return ;
+
+  const update = joinState.content;
+  console.log("initial content update triggered ")
+  if (update.length > 0) {
+    Y.applyUpdate(ydoc, update,"remote");
+  }
+}, [joinState.status]);
+
+
+
+  // useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc, awareness);
+  useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc);
+
+  // useEffect(() => {
+  //   return () => {
+  //     ydoc.destroy();
+  //     awareness.destroy();
+  //   };
+  // }, [ydoc,awareness]);
 
 
   if (socketStatus === "connecting") {
@@ -87,7 +96,7 @@ export default function DocPage() {
 
       <Editor
         ydoc={ydoc}
-        awareness={awareness}
+        // awareness={awareness}
         readOnly={joinState.role === "READ"}
       />
     </div>
@@ -95,4 +104,4 @@ export default function DocPage() {
 
 }
 
-// figure out the undefined doc runtime error .
+// build ui for tipTap and no user cursor is rendered need to check that too . getting error on multiple user writing . i have set in my buffer to keep track of user connected which will cause unexpected error if same user open 2 browser bcz only one socketId / userId registered there for 2 tab of single user and if one disconnect it will delete and my set will have none so it might cause some unexpected behavior or issue .

@@ -98,7 +98,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
     }
 
     // emitting to client update listener as socket is directional .
-    socket.to(documentId).emit("yjs:update",update);
+    socket.to(documentId).emit("yjs:update",Buffer.from(update));
   })
 
   

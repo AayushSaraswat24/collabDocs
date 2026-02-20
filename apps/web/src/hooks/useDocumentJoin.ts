@@ -30,7 +30,7 @@ export function useDocumentJoin(
     }
 
     setState({ status: "joining" });
-
+    console.log("firing document:join");
     socket.emit("document:join", { documentId }, (res: any) => {
       if (!res?.ok) {
         setState({

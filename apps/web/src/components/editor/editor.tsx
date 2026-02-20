@@ -11,18 +11,18 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 type EditorProps = {
   ydoc: Y.Doc;
-  awareness: Awareness;
+  // awareness: Awareness;
   readOnly: boolean;
 };
 
-export function Editor({ ydoc, awareness, readOnly }: EditorProps) {
+export function Editor({ ydoc, readOnly }: EditorProps) {
 
- const provider = useMemo(() => {
-    return {
-      awareness,
-      doc: ydoc,
-    };
-  }, [awareness, ydoc]);
+//  const provider = useMemo(() => {
+//     return {
+//       awareness,
+//       doc: ydoc,
+//     };
+//   }, [awareness, ydoc]);
 
   const editor = useEditor({
     editable: !readOnly,
@@ -31,16 +31,16 @@ export function Editor({ ydoc, awareness, readOnly }: EditorProps) {
     
     extensions: [
      StarterKit.configure({
-  undoRedo: false, // ✅ v3 syntax
+    undoRedo: false, 
 }),
 
       Collaboration.configure({
         document: ydoc,
       }),
 
-      CollaborationCaret.configure({
-        provider, // just pass awareness
-      }),
+      // CollaborationCaret.configure({
+      //   provider, // just pass awareness
+      // }),
 
       Placeholder.configure({
         placeholder: "Start typing here...",

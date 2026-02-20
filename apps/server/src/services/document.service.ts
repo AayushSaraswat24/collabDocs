@@ -1,7 +1,7 @@
 import * as Y from "yjs"
 import { prisma } from "@collabdoc/db"
 
-const DEBOUNCE_MS = 2000
+const DEBOUNCE_MS = 3000
 const FORCE_SAVE_MS = 20000
 
 type DocumentState = {
@@ -57,7 +57,7 @@ export async function loadDocument(documentId: string) {
 export function applyYjsUpdate(documentId: string, update: Uint8Array) {
   const doc = documents.get(documentId)
   if (!doc) return false
-
+  console.log("in buffer update function, type of update" , typeof update,update instanceof Uint8Array);
   Y.applyUpdate(doc.ydoc, update)
   return true
 }
@@ -70,6 +70,7 @@ export function addUser(documentId: string, userId: string) {
   if (!doc) return
 
   doc.activeUsers.add(userId)
+
 }
 
 export function removeUser(documentId: string, userId: string) {
@@ -119,7 +120,7 @@ export async function flush(documentId: string) {
     where: { id: documentId },
     data: { content: Buffer.from(update) }
   })
-
+  console.log(`Update save for docId ${documentId}`)
   doc.lastSavedAt = Date.now()
 }
 
