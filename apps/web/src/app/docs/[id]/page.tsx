@@ -25,17 +25,14 @@ export default function DocPage() {
 
     // awareness is yjs function to track all the users cursor position and by passing it to tiptap it render cursor . we pass awareness to tipTap for rendering and updating user cursor position and attach listener to awareness to send updates to server and also listen them to apply to show other user cursor positon .
 
-//   const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
+  const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
+  const cursorColor = useMemo(()=> getRandomColor(),[]);
 
-//   useEffect(() => {
-//   if (!session?.user) return;
-
-//   awareness.setLocalStateField("user", {
-//     id: session.user.id,
-//     name: session.user.name,
-//     color: getRandomColor(),
-//   });
-// }, [session?.user?.id, session?.user?.name]);
+const user = useMemo(() => ({
+  id: session?.user?.id ?? "",
+  name: session?.user?.name ?? "Anonymous",
+  color: cursorColor,
+}), [session?.user?.id, session?.user?.name, cursorColor])
 
 
 useEffect(() => {
@@ -54,15 +51,14 @@ useEffect(() => {
 
 
 
-  // useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc, awareness);
-  useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc);
+  useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "", ydoc, awareness);
 
-  // useEffect(() => {
-  //   return () => {
-  //     ydoc.destroy();
-  //     awareness.destroy();
-  //   };
-  // }, [ydoc,awareness]);
+  useEffect(() => {
+    return () => {
+      ydoc.destroy();
+      awareness.destroy();
+    };
+  }, [ydoc,awareness]);
 
 
   if (socketStatus === "connecting") {
@@ -96,12 +92,13 @@ useEffect(() => {
 
       <Editor
         ydoc={ydoc}
-        // awareness={awareness}
+        awareness={awareness}
         readOnly={joinState.role === "READ"}
+        user={user}
       />
     </div>
   );
 
 }
 
-// build ui for tipTap and no user cursor is rendered need to check that too . getting error on multiple user writing . i have set in my buffer to keep track of user connected which will cause unexpected error if same user open 2 browser bcz only one socketId / userId registered there for 2 tab of single user and if one disconnect it will delete and my set will have none so it might cause some unexpected behavior or issue .
+// build ui for tipTap and no user cursor is rendered need to check that too . i have set in my buffer to keep track of user connected which will cause unexpected error if same user open 2 browser bcz only one socketId / userId registered there for 2 tab of single user and if one disconnect it will delete and my set will have none so it might cause some unexpected behavior or issue . so upon disconnect the awareness of user got auto remove after 30 second bcz of heartbeat style . now i notice that some times cursor is not being shown properly on one screen and document is not synced properly . but before that handle the set of user issue in buffer of doc .

@@ -14,14 +14,15 @@ export function registerConnectionHandlers(io: Server) {
     registerDocumentHandlers(io,socket);
 
     socket.on("disconnect",async () => {
-      const {documentId,userId} = socket.data;
+      const {documentId,userId,yjsClientId} = socket.data;
       console.log(`Socket disconnected for user ${userId} from document ${documentId}`);
       if(!documentId) return ;
 
       const room=io.sockets.adapter.rooms.get(documentId);
 
       removeUser(documentId,userId);
-    
+      
+      
     });
 
 

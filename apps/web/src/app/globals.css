@@ -10,7 +10,56 @@
   pointer-events: none;
   height: 0;
 }
+.collab-cursor {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  pointer-events: none;
+  word-break: normal;
+}
 
+/* the vertical caret line */
+.collab-cursor__caret {
+  display: inline-block;
+  border-left: 2px solid;
+  height: 1.2em;
+  position: relative;
+  vertical-align: text-bottom;
+}
+
+/* name label sitting above the caret */
+.collab-cursor__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 3px 3px 3px 0;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+
+  /* hide by default, show on hover */
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* show label on hover */
+.collab-cursor:hover .collab-cursor__label {
+  opacity: 1;
+}
+
+/* hover only — cleaner */
+.collab-cursor__label { opacity: 0; }
+.collab-cursor:hover .collab-cursor__label { opacity: 1; }
+
+/* always visible */
+.collab-cursor__label { opacity: 1; }
+
+/* always show label — use this instead if you want it always visible */
+/* .collab-cursor__label { opacity: 1; } */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

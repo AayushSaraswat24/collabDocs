@@ -221,15 +221,13 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
   })
 
-  socket.on("document:awareness",({states})=>{
-    const {documentId}=socket.data;
+socket.on("document:awareness", (update) => {
+  const { documentId } = socket.data
+  if (!documentId) return
 
-    if(!documentId){
-      return ;
-    }
+  socket.to(documentId).emit("document:awareness", update) 
+})
 
-    socket.to(documentId).emit("document:awareness",{documentId,states});
-
-  })
 
 }
+

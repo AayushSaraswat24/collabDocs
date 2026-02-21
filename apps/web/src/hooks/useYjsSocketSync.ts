@@ -6,7 +6,7 @@ import { socket } from "@/lib/socket";
 import { Awareness } from "y-protocols/awareness";
 import {encodeAwarenessUpdate,applyAwarenessUpdate} from "y-protocols/awareness";
 
-export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc){
+export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awareness) {
 
     useEffect(()=>{
 
@@ -23,39 +23,44 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc){
         ydoc.on("update",updateHandler);
 
         const socketUpdateHandler=(update:Uint8Array)=>{
-               const uint8Update = new Uint8Array(update); 
-                if (uint8Update.length === 0) return;
-                Y.applyUpdate(ydoc, uint8Update, "remote");
+            const uint8Update = new Uint8Array(update); 
+            if (uint8Update.length === 0) return;
+            Y.applyUpdate(ydoc, uint8Update, "remote");
         }
 
         // if update comes from server.
         socket.on("yjs:update",socketUpdateHandler);
 
-    //    const awarenessUpdateHandler = ({added,updated,removed,}: {added: number[]; updated: number[];removed: number[];}) => {
+        // awareness listeners 
+
+       const awarenessUpdateHandler = ({added,updated,removed}: any,origin:any) => {
         
-    //     const changedClients = added.concat(updated).concat(removed);
+        if(origin === "remote" ) return ;
+        console.log(`awareness update fired`)
+        const changedClients = added.concat(updated).concat(removed);
 
-    //     const update = encodeAwarenessUpdate(awareness, changedClients);
+        const update = encodeAwarenessUpdate(awareness, changedClients);
 
-    //     socket.emit("document:awareness", update);
-    // };
+        socket.emit("document:awareness", update);
+    };
 
-    //     awareness.on("update", awarenessUpdateHandler);
+        awareness.on("update", awarenessUpdateHandler);
 
-    //     const socketAwarenessHandler = (update: Uint8Array) => {
-    //         applyAwarenessUpdate(awareness, new Uint8Array(update), "remote");
-    //     };
+        const socketAwarenessHandler = (update: Uint8Array) => {
+    
+            applyAwarenessUpdate(awareness, new Uint8Array(update), "remote");
+        };
 
-    //     socket.on("document:awareness", socketAwarenessHandler);
-
+        socket.on("document:awareness", socketAwarenessHandler);
 
         return () => {
           ydoc.off("update", updateHandler);
-        //   awareness.off("update", awarenessUpdateHandler);
+          awareness.off("update", awarenessUpdateHandler);
           socket.off("yjs:update", socketUpdateHandler);
-        //   socket.off("document:awareness", socketAwarenessHandler);
+          socket.off("document:awareness", socketAwarenessHandler);
+        
         };
 
-    },[documentId,ydoc]);
+    },[documentId,ydoc,awareness]);
 
 }
