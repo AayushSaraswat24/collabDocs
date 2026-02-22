@@ -6,7 +6,7 @@ import { socket } from "@/lib/socket";
 import { Awareness } from "y-protocols/awareness";
 import {encodeAwarenessUpdate,applyAwarenessUpdate} from "y-protocols/awareness";
 
-export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awareness) {
+export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awareness,user:{id:string,name:string,color:string}) {
 
     useEffect(()=>{
 
@@ -18,6 +18,13 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
             socket.emit("yjs:update",update)
 
         }
+            if(user?.id && user?.name){
+                awareness.setLocalStateField("user", {
+                    id: user.id,
+                    name: user.name,
+                    color: user.color,
+                });
+            }
 
         // it passes the update as uint8Array already . remote is used to prevent infinte  server and client update loop .
         ydoc.on("update",updateHandler);
@@ -36,7 +43,7 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
        const awarenessUpdateHandler = ({added,updated,removed}: any,origin:any) => {
         
         if(origin === "remote" ) return ;
-        console.log(`awareness update fired`)
+
         const changedClients = added.concat(updated).concat(removed);
 
         const update = encodeAwarenessUpdate(awareness, changedClients);
