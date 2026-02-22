@@ -20,7 +20,7 @@ export function registerConnectionHandlers(io: Server) {
 
       const room=io.sockets.adapter.rooms.get(documentId);
 
-      removeUser(documentId,userId);
+      removeUser(documentId,socket.id);
       
       
     });

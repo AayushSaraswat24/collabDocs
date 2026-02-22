@@ -18,13 +18,7 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
             socket.emit("yjs:update",update)
 
         }
-            if(user?.id && user?.name){
-                awareness.setLocalStateField("user", {
-                    id: user.id,
-                    name: user.name,
-                    color: user.color,
-                });
-            }
+       
 
         // it passes the update as uint8Array already . remote is used to prevent infinte  server and client update loop .
         ydoc.on("update",updateHandler);
@@ -59,6 +53,14 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
         };
 
         socket.on("document:awareness", socketAwarenessHandler);
+
+            if(user?.id && user?.name){
+                awareness.setLocalStateField("user", {
+                    id: user.id,
+                    name: user.name,
+                    color: user.color,
+                });
+            }
 
         return () => {
           ydoc.off("update", updateHandler);

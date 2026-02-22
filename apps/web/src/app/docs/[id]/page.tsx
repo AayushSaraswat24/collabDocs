@@ -42,7 +42,7 @@ export default function DocPage() {
     if(socketStatus !== "connected") return ;
 
     const update = joinState.content;
-    console.log("initial content update triggered ")
+
     if (update.length > 0) {
       Y.applyUpdate(ydoc, update,"remote");
     }

@@ -3,7 +3,7 @@ import { prisma } from "@collabdoc/db";
 import {Role} from "@collabdoc/db";
 import { kickUserFromRoom } from "../room.utils";
 import * as Y from "yjs"
-import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser} from "../../services/document.service";
+import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser, removeUserByUserId} from "../../services/document.service";
 
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 
@@ -47,7 +47,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
       socket.data.documentId = documentId;
       socket.data.role = collaboration.role;
       
-      addUser(documentId,userId);
+      addUser(documentId,userId,socket.id);
       
       socket.to(documentId).emit("document:userJoined",{name:socket.data.userName});
       
@@ -133,6 +133,13 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
       return ;
     }
     
+    if(targetUserId === userId){
+      return ack({
+        ok:false,
+        error:"CANNOT_KICK_SELF",
+      });
+    }
+
     const document=await prisma.document.findUnique({
       where:{id:documentId},
       select:{ownerId:true},
@@ -153,7 +160,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
     })
     
     kickUserFromRoom(io, documentId, targetUserId);
-    removeUser(documentId,targetUserId);
+    removeUserByUserId(documentId,targetUserId);
     socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
 
     return ack({
@@ -221,12 +228,18 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
   })
 
-socket.on("document:awareness", (update) => {
-  const { documentId } = socket.data
-  if (!documentId) return
+ socket.on("document:awareness", (update) => {
+   const { documentId } = socket.data
+   if (!documentId) return
 
-  socket.to(documentId).emit("document:awareness", update) 
+   socket.to(documentId).emit("document:awareness", update) 
 })
+
+
+  socket.on("document:leave",({documentId}) =>{
+    removeUser(documentId,socket.id);
+    socket.leave(documentId);
+  })
 
 
 }

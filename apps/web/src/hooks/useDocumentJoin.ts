@@ -49,6 +49,11 @@ export function useDocumentJoin(
         docName: res.name,
       });
     });
+
+    return () =>{
+      socket.emit("document:leave",{documentId})
+    }
+    
   }, [documentId, enabled]);
 
   return state;

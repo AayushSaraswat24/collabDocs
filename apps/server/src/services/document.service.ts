@@ -8,8 +8,9 @@ type DocumentState = {
   ydoc: Y.Doc
   debounceTimer: NodeJS.Timeout | null
   lastSavedAt: number
-  activeUsers: Set<string>
+  activeUsers: Map<string,string>
   updateHandler: () => void
+  isFlushing: boolean
 }
 
 const documents = new Map<string, DocumentState>()
@@ -42,8 +43,9 @@ export async function loadDocument(documentId: string) {
     ydoc,
     debounceTimer: null,
     lastSavedAt: Date.now(),
-    activeUsers: new Set(),
-    updateHandler
+    activeUsers: new Map<string,string>(),
+    updateHandler,
+    isFlushing: false
   }
 
   documents.set(documentId, state)
@@ -65,27 +67,41 @@ export function applyYjsUpdate(documentId: string, update: Uint8Array) {
 // ============================
 // USERS
 // ============================
-export function addUser(documentId: string, userId: string) {
+export function addUser(documentId: string, userId: string,socketId:string) {
   const doc = documents.get(documentId)
   if (!doc) return
 
-  doc.activeUsers.add(userId)
+  doc.activeUsers.set(socketId,userId)
 
 }
 
-export function removeUser(documentId: string, userId: string) {
+export async function removeUser(documentId: string, socketId:string) {
   const doc = documents.get(documentId)
   if (!doc) return
 
-  doc.activeUsers.delete(userId)
+  doc.activeUsers.delete(socketId)
 
   if (doc.activeUsers.size === 0) {
-    destroyDocument(documentId)
+   await destroyDocument(documentId)
   }
 }
 
+export function removeUserByUserId(documentId: string, userId: string){
+  const doc=documents.get(documentId);
+  if(!doc) return ;
+
+  for (const [socketId, uid] of doc.activeUsers.entries()) {
+    if (uid === userId) {
+      doc.activeUsers.delete(socketId)
+    }
+}
+}
+
 export function getActiveUsers(documentId: string) {
-  return documents.get(documentId)?.activeUsers ?? new Set()
+  const doc=documents.get(documentId)
+  if(!doc) return new Set();
+
+  return new Set(doc.activeUsers.values());
 }
 
 export function getYDoc(documentId: string) {
@@ -105,15 +121,18 @@ function scheduleSave(documentId: string) {
     flush(documentId)
   }, DEBOUNCE_MS)
 
-  if (Date.now() - doc.lastSavedAt > FORCE_SAVE_MS) {
+  if (Date.now() - doc.lastSavedAt > FORCE_SAVE_MS ) {
     flush(documentId)
   }
 }
 
 export async function flush(documentId: string) {
   const doc = documents.get(documentId)
-  if (!doc) return
+  if (!doc || doc.isFlushing) return
 
+  doc.isFlushing=true;
+
+try{
   const update = Y.encodeStateAsUpdate(doc.ydoc)
 
   await prisma.document.update({
@@ -122,6 +141,11 @@ export async function flush(documentId: string) {
   })
   console.log(`Update save for docId ${documentId}`)
   doc.lastSavedAt = Date.now()
+  
+}finally{
+  doc.isFlushing = false
+}
+
 }
 
 // ============================
@@ -133,12 +157,12 @@ export async function revertDocument(
 ) {
   const existing = documents.get(documentId)
 
-  const existingUsers = existing?.activeUsers ?? new Set()
+  const existingUsers = existing?.activeUsers ?? new Map<string,string>()
 
   if (existing) {
     if (existing.debounceTimer) clearTimeout(existing.debounceTimer)
 
-    // 🔥 remove listener before destroy
+  
     existing.ydoc.off("update", existing.updateHandler)
 
     existing.ydoc.destroy()
@@ -155,7 +179,8 @@ export async function revertDocument(
     debounceTimer: null,
     lastSavedAt: Date.now(),
     activeUsers: existingUsers,
-    updateHandler
+    updateHandler,
+    isFlushing: false
   }
 
   documents.set(documentId, newState)

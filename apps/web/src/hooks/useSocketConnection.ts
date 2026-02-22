@@ -30,6 +30,7 @@ export function useSocketConnection() {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("connect_error", onConnectError);
+      socket.disconnect();
     };
   }, []);
 
