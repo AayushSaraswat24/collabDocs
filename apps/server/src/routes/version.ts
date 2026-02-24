@@ -1,5 +1,4 @@
 import {Router} from "express";
-import { AuthenticatedRequest } from "../types/express";
 import {prisma} from "@collabdoc/db"
 import * as Y from "yjs"
 import { getIO } from "../socket";
@@ -9,10 +8,10 @@ const router=Router();
 
 router.post("/revert",async (req,res) =>{
     try{
-        const authReq = req as AuthenticatedRequest;
+
         const { docId, versionId } = req.body;
         // directly attached to request from middleware .
-        const { userId, userName } = authReq;
+        const { userId, userName } = req;
 
         if(!userId || !userName){
             res.status(401).json({success:false,message:"Unauthorized"});

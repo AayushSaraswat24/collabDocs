@@ -1,6 +1,8 @@
-import {Request} from "express";
+import "express"
 
-export interface AuthenticatedRequest extends Request {
-    userId: string;
-    userName: string | null;
+declare module "express-serve-static-core" {
+  interface Request {
+    userId?: string
+    userName?: string | null
+  }
 }

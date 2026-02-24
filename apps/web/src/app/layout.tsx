@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
       >
-        <div className="flex min-h-screen flex-col overflow-hidden">
+        <div className="flex h-screen flex-col overflow-hidden">
 
         <ThemeProvider>
 
@@ -39,22 +39,24 @@ export default function RootLayout({
 
           <Navbar />
 
-        <div className="flex flex-col flex-1 overflow-y-auto ">
+        <div className="flex flex-col flex-1 min-h-0 overflow-hidden ">
 
          {children}
 
         </div>
-        <Toaster 
-        position="top-center"
-        richColors
-        closeButton
-        duration={3500}
-        />
+        
+          <Toaster 
+          position="top-center"
+          richColors
+          closeButton
+          duration={3500}
+          />
         </Provider>
 
         </ThemeProvider>
 
         </div>
+
       </body>
     </html>
   );

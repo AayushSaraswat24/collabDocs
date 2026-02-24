@@ -10,6 +10,9 @@
   pointer-events: none;
   height: 0;
 }
+
+/* ── Collab cursors ──────────────────────────────────────────────────────────── */
+
 .collab-cursor {
   position: relative;
   margin-left: -1px;
@@ -18,7 +21,6 @@
   word-break: normal;
 }
 
-/* the vertical caret line */
 .collab-cursor__caret {
   display: inline-block;
   border-left: 2px solid;
@@ -27,7 +29,6 @@
   vertical-align: text-bottom;
 }
 
-/* name label sitting above the caret */
 .collab-cursor__label {
   position: absolute;
   top: -1.4em;
@@ -38,28 +39,154 @@
   padding: 1px 4px;
   border-radius: 3px 3px 3px 0;
   white-space: nowrap;
-  user-select: none;
   pointer-events: none;
-
-  /* hide by default, show on hover */
-  opacity: 0;
-  transition: opacity 0.2s;
 }
 
-/* show label on hover */
-.collab-cursor:hover .collab-cursor__label {
-  opacity: 1;
+/* ── ProseMirror — Light ─────────────────────────────────────────────────────── */
+
+.ProseMirror {
+  padding: 3rem 3.5rem;
+  min-height: 400px;
+  outline: none;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #111827;
+  word-break: break-word;
+  caret-color: #2563eb;
 }
 
-/* hover only — cleaner */
-.collab-cursor__label { opacity: 0; }
-.collab-cursor:hover .collab-cursor__label { opacity: 1; }
+.ProseMirror p {
+  margin-bottom: 0.9em;
+}
 
-/* always visible */
-.collab-cursor__label { opacity: 1; }
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75em;
+}
 
-/* always show label — use this instead if you want it always visible */
-/* .collab-cursor__label { opacity: 1; } */
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75em;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.2em;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #e5e7eb;
+  padding-left: 1rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 1em 0;
+}
+
+.ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin: 1.5em 0 0.5em;
+  color: #0f172a;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  margin: 1.3em 0 0.4em;
+  color: #0f172a;
+}
+
+.ProseMirror h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  margin: 1.1em 0 0.3em;
+  color: #0f172a;
+}
+
+.ProseMirror code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  background: #f3f4f6;
+  color: #c7254e;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.ProseMirror pre {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.65;
+  padding: 16px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+
+.ProseMirror pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid #f3f4f6;
+  margin: 2em 0;
+}
+
+/* ── ProseMirror — Dark ──────────────────────────────────────────────────────── */
+
+.dark .ProseMirror {
+  color: #e5e7eb;
+  caret-color: #60a5fa;
+}
+
+.dark .ProseMirror h1,
+.dark .ProseMirror h2,
+.dark .ProseMirror h3 {
+  color: #f9fafb;
+}
+
+.dark .ProseMirror blockquote {
+  border-left-color: #374151;
+  color: #9ca3af;
+}
+
+.dark .ProseMirror code {
+  background: #27272a;
+  color: #f87171;
+}
+
+.dark .ProseMirror hr {
+  border-top-color: #27272a;
+}
+
+.dark .tiptap p.is-editor-empty:first-child::before {
+  color: #4b5563;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.editor-scroll {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+
+.editor-scroll::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari */
+}
+
+
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

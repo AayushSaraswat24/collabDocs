@@ -7,6 +7,8 @@ import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import { Awareness } from "y-protocols/awareness";
 import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+import Toolbar from "./toolbar";
 
 type EditorUser = {
   id: string;
@@ -37,6 +39,8 @@ export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
       StarterKit.configure({
         undoRedo: false,
       }),
+
+      Underline,
 
       Collaboration.configure({
         document: ydoc,
@@ -77,6 +81,17 @@ export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
 
   });
 
+return (
+  <div className="flex flex-col h-full min-h-0">
 
-  return <EditorContent editor={editor} />;
+    <Toolbar editor={editor} />
+
+    <div className="flex-1 overflow-y-auto min-h-0 editor-scroll">
+      <EditorContent className="m-0 p-0"
+        editor={editor}
+      />
+    </div>
+
+  </div>
+)
 }

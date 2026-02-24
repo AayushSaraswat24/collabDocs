@@ -1,10 +1,9 @@
 // middleware for express . diff from socket middleware .
 
-import { Response,NextFunction } from "express";
-import { AuthenticatedRequest } from "../types/express";
+import { Request,Response,NextFunction } from "express";
 import { prisma } from "@collabdoc/db";
 
-export async function authenticate(req:AuthenticatedRequest,res:Response,next:NextFunction){
+export async function authenticate(req:Request,res:Response,next:NextFunction){
     try{
         const cookieHeader= req.headers.cookie;
 

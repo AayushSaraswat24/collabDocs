@@ -132,8 +132,8 @@ export async function flush(documentId: string) {
 
   doc.isFlushing=true;
 
-try{
   const update = Y.encodeStateAsUpdate(doc.ydoc)
+try{
 
   await prisma.document.update({
     where: { id: documentId },
@@ -142,7 +142,25 @@ try{
   console.log(`Update save for docId ${documentId}`)
   doc.lastSavedAt = Date.now()
   
-}finally{
+}catch(error:any){
+  console.error(`Failed to save document ${documentId}:`, error)
+
+  if (error.code === "P1017") {
+      console.log("Retrying flush after connection closed...")
+
+      try {
+        await prisma.document.update({
+          where: { id: documentId },
+          data: { content: Buffer.from(update) }
+        })
+        console.log("Retry successful")
+      } catch (retryError) {
+        console.error("Retry also failed:", retryError)
+      }
+    }
+
+}
+finally{
   doc.isFlushing = false
 }
 

@@ -10,6 +10,7 @@ import { Editor } from "@/components/editor/editor";
 import { Awareness } from "y-protocols/awareness";
 import { getRandomColor } from "@/utils/randomCursorColor";
 import { useSession } from "next-auth/react";
+import { OptionBar } from "@/components/doc/editorPage/optionBar.";
 
 export default function DocPage() {
   const { id } = useParams();
@@ -83,11 +84,12 @@ export default function DocPage() {
   if (joinState.status !== "ready") return null;
 
   return (
-    <div className="flex flex-col flex-1">
-      <h1>{joinState.docName}</h1>
-      <p>
-        Role: {joinState.role} {joinState.isOwner && "(Owner)"}
-      </p>
+    
+   <div className="flex flex-col flex-1 min-h-0 gap-4 bg-neutral-100 dark:bg-neutral-950 transition-colors duration-200">
+  <OptionBar joinState={joinState} />
+
+  <main className="flex-1 min-h-0 mx-auto w-full max-w-6xl px-4 pb-4">
+    <div className="h-full overflow-hidden bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.04)] flex flex-col transition-colors duration-200">
       {session?.user && (
         <Editor
           ydoc={ydoc}
@@ -97,8 +99,10 @@ export default function DocPage() {
         />
       )}
     </div>
-  );
+  </main>
+</div>
+
+);
 
 }
-
-// build ui for tipTap and no user cursor is rendered need to check that too . i have set in my buffer to keep track of user connected which will cause unexpected error if same user open 2 browser bcz only one socketId / userId registered there for 2 tab of single user and if one disconnect it will delete and my set will have none so it might cause some unexpected behavior or issue . so upon disconnect the awareness of user got auto remove after 30 second bcz of heartbeat style . but before that handle the set of user issue in buffer of doc .
+ // make the editor scrollable instead of make it grow .

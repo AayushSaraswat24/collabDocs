@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import { authenticate } from "./middleware/auth";
+import router from "./routes/version";
 
 export const app = express();
 
@@ -15,3 +17,5 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
+
+app.use("/api",authenticate,router)
