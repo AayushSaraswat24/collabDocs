@@ -19,7 +19,7 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
   }
  // on the basis on data-optionbar attribute 
   return (
-    <header data-optionbar 
+    <header 
      className="
       flex items-center justify-between
       px-5 py-0

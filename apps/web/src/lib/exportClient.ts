@@ -31,7 +31,7 @@ export function exportPDF(docName: string) {
             max-width: 21cm;
             margin: 0 auto;
           }
-
+ 
           p { margin-bottom: 1em; }
 
           h1 {

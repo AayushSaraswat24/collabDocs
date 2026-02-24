@@ -89,7 +89,7 @@ return (
     <OptionBar joinState={joinState} />
 
     <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
-      <div data-editor-card
+      <div 
        className="
         flex-1 min-h-0 mx-auto w-full max-w-4xl
         bg-white dark:bg-neutral-900
@@ -116,4 +116,4 @@ return (
 )
 
 }
- // pdf export function done , make a plain text , docx for word,markdown export too and then put them together under one export button .
+ // pdf export function done , make a plain text , docx for word,markdown export too and then put them together under one export button . taking too much time to load all the documents .
