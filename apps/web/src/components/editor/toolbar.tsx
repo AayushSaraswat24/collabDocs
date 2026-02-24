@@ -82,7 +82,8 @@ export default function Toolbar({ editor }: Props) {
   const s = 14
 
   return (
-    <div className="
+    <div data-toolbar
+      className="
       flex flex-wrap items-center gap-1
       px-4 py-2
       bg-white dark:bg-neutral-900

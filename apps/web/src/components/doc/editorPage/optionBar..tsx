@@ -1,6 +1,7 @@
 'use client'
 
-import { Users, ChevronDown, Cpu, History, Crown, Shield } from 'lucide-react'
+import { Users, ChevronDown, Cpu, History, Crown, Shield, Download } from 'lucide-react'
+import { exportPDF } from '@/lib/exportClient'
 
 interface Prop {
   status: "ready";
@@ -12,8 +13,14 @@ interface Prop {
 }
 
 export function OptionBar({ joinState }: { joinState: Prop }) {
+
+  function handleExportPDF() {
+    exportPDF(joinState.docName)
+  }
+ // on the basis on data-optionbar attribute 
   return (
-    <header className="
+    <header data-optionbar 
+     className="
       flex items-center justify-between
       px-5 py-0
       h-14
@@ -143,6 +150,15 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
             <ChevronDown size={10} />
           </button>
         )}
+
+        <button
+          onClick={handleExportPDF}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide  bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-lg hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-all duration-150"
+        >
+          <Download size={12} />
+          Export PDF
+        </button>
+
       </div>
 
     </header>

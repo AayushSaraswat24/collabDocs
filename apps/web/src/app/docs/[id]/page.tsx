@@ -88,9 +88,9 @@ return (
 
     <OptionBar joinState={joinState} />
 
-    {/* Editor surface — fills remaining space */}
     <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
-      <div className="
+      <div data-editor-card
+       className="
         flex-1 min-h-0 mx-auto w-full max-w-4xl
         bg-white dark:bg-neutral-900
         border border-neutral-200 dark:border-neutral-800
@@ -116,4 +116,4 @@ return (
 )
 
 }
- // make the editor scrollable instead of make it grow .
+ // pdf export function done , make a plain text , docx for word,markdown export too and then put them together under one export button .
