@@ -83,26 +83,37 @@ export default function DocPage() {
 
   if (joinState.status !== "ready") return null;
 
-  return (
-    
-   <div className="flex flex-col flex-1 min-h-0 gap-4 bg-neutral-100 dark:bg-neutral-950 transition-colors duration-200">
-  <OptionBar joinState={joinState} />
+return (
+  <div className="flex flex-col flex-1 min-h-0 bg-neutral-50 dark:bg-neutral-950 transition-colors duration-200">
 
-  <main className="flex-1 min-h-0 mx-auto w-full max-w-6xl px-4 pb-4">
-    <div className="h-full overflow-hidden bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.04)] flex flex-col transition-colors duration-200">
-      {session?.user && (
-        <Editor
-          ydoc={ydoc}
-          awareness={awareness}
-          readOnly={joinState.role === "READ"}
-          user={user}
-        />
-      )}
+    <OptionBar joinState={joinState} />
+
+    {/* Editor surface — fills remaining space */}
+    <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
+      <div className="
+        flex-1 min-h-0 mx-auto w-full max-w-4xl
+        bg-white dark:bg-neutral-900
+        border border-neutral-200 dark:border-neutral-800
+        rounded-xl
+        shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]
+        dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.3)]
+        flex flex-col
+        overflow-hidden
+        transition-colors duration-200
+      ">
+        {session?.user && (
+          <Editor
+            ydoc={ydoc}
+            awareness={awareness}
+            readOnly={joinState.role === "READ"}
+            user={user}
+          />
+        )}
+      </div>
     </div>
-  </main>
-</div>
 
-);
+  </div>
+)
 
 }
  // make the editor scrollable instead of make it grow .

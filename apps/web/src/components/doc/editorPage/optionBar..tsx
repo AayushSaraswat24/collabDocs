@@ -1,53 +1,150 @@
-interface prop {
-      status: "ready";
-      documentId: string;
-      role: "READ" | "WRITE";
-      isOwner: boolean;
-      content: Uint8Array;
-      docName: string;
+'use client'
+
+import { Users, ChevronDown, Cpu, History, Crown, Shield } from 'lucide-react'
+
+interface Prop {
+  status: "ready";
+  documentId: string;
+  role: "READ" | "WRITE";
+  isOwner: boolean;
+  content: Uint8Array;
+  docName: string;
 }
 
-export function OptionBar({joinState}: {joinState: prop}) {
+export function OptionBar({ joinState }: { joinState: Prop }) {
+  return (
+    <header className="
+      flex items-center justify-between
+      px-5 py-0
+      h-14
+      bg-white dark:bg-neutral-900
+      border-b border-neutral-100 dark:border-neutral-800
+      shrink-0
+    ">
 
-    return (
-         <header className="grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 py-3 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 shrink-0">
-        
-            {/* Left */}
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-32 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-dashed border-neutral-300 dark:border-neutral-700 opacity-40" />
-            </div>
-        
-            {/* Center */}
-            <div className="flex flex-col items-center gap-1 min-w-0">
-              <h1 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 truncate max-w-56 tracking-tight">
-                {joinState.docName}
-              </h1>
-        
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-semibold rounded border uppercase tracking-wider
-                  ${
-                    joinState.role === "WRITE"
-                      ? "bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800"
-                      : "bg-neutral-100 text-neutral-500 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700"
-                  }`}
-                >
-                  {joinState.role}
-                </span>
-        
-                {joinState.isOwner && (
-                  <span className="px-2 py-0.5 text-[10px] font-semibold rounded border uppercase tracking-wider bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800">
-                    Owner
-                  </span>
-                )}
-              </div>
-            </div>
-        
-            {/* Right */}
-            <div className="flex justify-end">
-              <div className="h-8 w-32 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-dashed border-neutral-300 dark:border-neutral-700 opacity-40" />
-            </div>
-          </header>
-        
-    )
+      {/* ── Left: future actions placeholder ── */}
+      <div className="flex items-center gap-2 w-64">
+        {/* AI Button — future */}
+        <button className="
+          flex items-center gap-1.5 px-3 py-1.5
+          text-xs font-medium tracking-wide
+          text-neutral-400 dark:text-neutral-600
+          border border-dashed border-neutral-200 dark:border-neutral-700
+          rounded-lg
+          hover:border-neutral-300 hover:text-neutral-600
+          dark:hover:border-neutral-600 dark:hover:text-neutral-400
+          transition-all duration-150
+          font-['DM_Sans',sans-serif]
+        ">
+          <Cpu size={12} />
+          AI
+        </button>
+
+        {/* Version History — future */}
+        <button className="
+          flex items-center gap-1.5 px-3 py-1.5
+          text-xs font-medium tracking-wide
+          text-neutral-400 dark:text-neutral-600
+          border border-dashed border-neutral-200 dark:border-neutral-700
+          rounded-lg
+          hover:border-neutral-300 hover:text-neutral-600
+          dark:hover:border-neutral-600 dark:hover:text-neutral-400
+          transition-all duration-150
+          font-['DM_Sans',sans-serif]
+        ">
+          <History size={12} />
+          History
+        </button>
+      </div>
+
+      {/* ── Center: doc name + badges ── */}
+      <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1">
+        <h1 className="
+          text-sm font-semibold
+          text-neutral-800 dark:text-neutral-100
+          truncate max-w-64
+          tracking-tight
+          font-['DM_Sans',sans-serif]
+        ">
+          {joinState.docName}
+        </h1>
+
+        <div className="flex items-center gap-1.5">
+          {joinState.isOwner ? (
+            <span className="
+              flex items-center gap-1
+              px-1.5 py-0.5 text-[9px] font-semibold
+              rounded uppercase tracking-widest
+              bg-amber-50 text-amber-600 border border-amber-200
+              dark:bg-amber-950/30 dark:text-amber-500 dark:border-amber-900
+            ">
+              <Crown size={8} />
+              Owner
+            </span>
+          ) : (
+            <span className="
+              flex items-center gap-1
+              px-1.5 py-0.5 text-[9px] font-semibold
+              rounded uppercase tracking-widest
+              bg-neutral-100 text-neutral-400 border border-neutral-200
+              dark:bg-neutral-800 dark:text-neutral-500 dark:border-neutral-700
+            ">
+              <Shield size={8} />
+              {joinState.role === 'WRITE' ? 'Editor' : 'Viewer'}
+            </span>
+          )}
+
+          {joinState.role === 'READ' && (
+            <span className="
+              px-1.5 py-0.5 text-[9px] font-semibold
+              rounded uppercase tracking-widest
+              bg-neutral-100 text-neutral-400 border border-neutral-200
+              dark:bg-neutral-800 dark:text-neutral-500 dark:border-neutral-700
+            ">
+              Read only
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── Right: collaborators + menu ── */}
+      <div className="flex items-center gap-2 justify-end w-64">
+
+        {/* Active users — future */}
+        <button className="
+          flex items-center gap-1.5 px-3 py-1.5
+          text-xs font-medium tracking-wide
+          text-neutral-400 dark:text-neutral-600
+          border border-dashed border-neutral-200 dark:border-neutral-700
+          rounded-lg
+          hover:border-neutral-300 hover:text-neutral-600
+          dark:hover:border-neutral-600 dark:hover:text-neutral-400
+          transition-all duration-150
+          font-['DM_Sans',sans-serif]
+        ">
+          <Users size={12} />
+          Collaborators
+        </button>
+
+        {/* Owner actions dropdown — future */}
+        {joinState.isOwner && (
+          <button className="
+            flex items-center gap-1 px-3 py-1.5
+            text-xs font-medium tracking-wide
+            text-neutral-400 dark:text-neutral-600
+            border border-dashed border-neutral-200 dark:border-neutral-700
+            rounded-lg
+            hover:border-neutral-300 hover:text-neutral-600
+            dark:hover:border-neutral-600 dark:hover:text-neutral-400
+            transition-all duration-150
+            font-['DM_Sans',sans-serif]
+          ">
+            Manage
+            <ChevronDown size={10} />
+          </button>
+        )}
+      </div>
+
+    </header>
+  )
 }

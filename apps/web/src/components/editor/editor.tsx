@@ -83,15 +83,16 @@ export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
 
 return (
   <div className="flex flex-col h-full min-h-0">
-
     <Toolbar editor={editor} />
 
-    <div className="flex-1 overflow-y-auto min-h-0 editor-scroll">
-      <EditorContent className="m-0 p-0"
-        editor={editor}
-      />
+    {/* Scrollable writing area */}
+    <div className="flex-1 overflow-y-auto min-h-0 editor-scroll bg-neutral-50 dark:bg-neutral-950">
+      {/* Paper-like writing surface */}
+      <div className="min-h-full">
+        <EditorContent className="m-0 p-0" editor={editor} />
+      </div>
     </div>
-
   </div>
 )
+
 }
