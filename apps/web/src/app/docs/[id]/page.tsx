@@ -86,34 +86,18 @@ export default function DocPage() {
 return (
   <div className="flex flex-col flex-1 min-h-0 bg-neutral-50 dark:bg-neutral-950 transition-colors duration-200">
 
-    <OptionBar joinState={joinState} />
-
-    <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
-      <div 
-       className="
-        flex-1 min-h-0 mx-auto w-full max-w-4xl
-        bg-white dark:bg-neutral-900
-        border border-neutral-200 dark:border-neutral-800
-        rounded-xl
-        shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]
-        dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.3)]
-        flex flex-col
-        overflow-hidden
-        transition-colors duration-200
-      ">
         {session?.user && (
           <Editor
             ydoc={ydoc}
             awareness={awareness}
             readOnly={joinState.role === "READ"}
             user={user}
+            joinState={joinState}
           />
         )}
-      </div>
-    </div>
 
   </div>
 )
 
 }
- // pdf export function done , make a plain text , docx for word,markdown export too and then put them together under one export button . taking too much time to load all the documents .
+ // make other function work like live users add invite user option withit  , special feature for owner , document versioning . 

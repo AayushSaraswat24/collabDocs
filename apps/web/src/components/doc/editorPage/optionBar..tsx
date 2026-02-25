@@ -2,8 +2,11 @@
 
 import { Users, ChevronDown, Cpu, History, Crown, Shield, Download } from 'lucide-react'
 import { exportPDF } from '@/lib/exportClient'
+import {Editor} from "@tiptap/react"
+import { exportAsMarkdown, exportAsPlainText } from '@/lib/export/export';
+import { ExportDropDown } from './exportDropDown';
 
-interface Prop {
+export interface Prop {
   status: "ready";
   documentId: string;
   role: "READ" | "WRITE";
@@ -12,7 +15,14 @@ interface Prop {
   docName: string;
 }
 
-export function OptionBar({ joinState }: { joinState: Prop }) {
+interface OptionBarProps {
+  joinState: Prop;
+  editor: Editor | null;
+}
+
+export function OptionBar({ joinState,editor }: OptionBarProps) {
+
+  if(!editor) return ;
 
   function handleExportPDF() {
     exportPDF(joinState.docName)
@@ -37,7 +47,7 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
           text-xs font-medium tracking-wide
           text-neutral-400 dark:text-neutral-600
           border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg
+          rounded-lg cursor-pointer
           hover:border-neutral-300 hover:text-neutral-600
           dark:hover:border-neutral-600 dark:hover:text-neutral-400
           transition-all duration-150
@@ -53,7 +63,7 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
           text-xs font-medium tracking-wide
           text-neutral-400 dark:text-neutral-600
           border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg
+          rounded-lg cursor-pointer
           hover:border-neutral-300 hover:text-neutral-600
           dark:hover:border-neutral-600 dark:hover:text-neutral-400
           transition-all duration-150
@@ -123,7 +133,7 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
           text-xs font-medium tracking-wide
           text-neutral-400 dark:text-neutral-600
           border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg
+          rounded-lg cursor-pointer
           hover:border-neutral-300 hover:text-neutral-600
           dark:hover:border-neutral-600 dark:hover:text-neutral-400
           transition-all duration-150
@@ -133,31 +143,20 @@ export function OptionBar({ joinState }: { joinState: Prop }) {
           Collaborators
         </button>
 
-        {/* Owner actions dropdown — future */}
-        {joinState.isOwner && (
-          <button className="
+        <button className="
             flex items-center gap-1 px-3 py-1.5
             text-xs font-medium tracking-wide
             text-neutral-400 dark:text-neutral-600
             border border-dashed border-neutral-200 dark:border-neutral-700
-            rounded-lg
+            rounded-lg cursor-pointer
             hover:border-neutral-300 hover:text-neutral-600
             dark:hover:border-neutral-600 dark:hover:text-neutral-400
             transition-all duration-150
             font-['DM_Sans',sans-serif]
           ">
-            Manage
-            <ChevronDown size={10} />
-          </button>
-        )}
-
-        <button
-          onClick={handleExportPDF}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide  bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-lg hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-all duration-150"
-        >
-          <Download size={12} />
-          Export PDF
-        </button>
+            <ExportDropDown editor={editor} fileName={joinState.docName} />  
+          
+          </button>        
 
       </div>
 

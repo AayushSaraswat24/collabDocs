@@ -9,6 +9,9 @@ import { Awareness } from "y-protocols/awareness";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import Toolbar from "./toolbar";
+import { OptionBar } from "../doc/editorPage/optionBar.";
+import { Prop } from "../doc/editorPage/optionBar.";
+import { Markdown } from 'tiptap-markdown'
 
 type EditorUser = {
   id: string;
@@ -21,9 +24,10 @@ type EditorProps = {
   awareness: Awareness;
   readOnly: boolean;
   user: EditorUser;
+  joinState: Prop;
 };
 
-export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
+export function Editor({ ydoc, awareness, readOnly, user,joinState }: EditorProps) {
 
  
   const provider = { awareness, doc: ydoc };
@@ -44,6 +48,13 @@ export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
 
       Collaboration.configure({
         document: ydoc,
+      }),
+
+      Markdown.configure({
+        html: false, 
+        tightLists: true,
+        linkify: true,
+        transformPastedText: true,
       }),
 
       // caret for cursor rendering .
@@ -82,17 +93,33 @@ export function Editor({ ydoc, awareness, readOnly, user }: EditorProps) {
   });
 
 return (
-  <div className="flex flex-col h-full min-h-0">
-    <Toolbar editor={editor} />
+  <div className="flex flex-col flex-1 min-h-0">
 
-    {/* Scrollable writing area */}
-    <div className="flex-1 overflow-y-auto min-h-0 editor-scroll bg-neutral-50 dark:bg-neutral-950">
-      {/* Paper-like writing surface */}
-      <div className="min-h-full">
-        <EditorContent className="m-0 p-0" editor={editor} />
+  <OptionBar joinState={joinState} editor={editor} />
+  
+      <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
+        <div 
+         className=" flex-1 min-h-0 mx-auto w-full max-w-4xl bg-white dark:bg-neutral-900
+          border border-neutral-200 dark:border-neutral-800 rounded-xl
+          shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]
+          dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_32px_rgba(0,0,0,0.3)] flex flex-col
+          overflow-hidden transition-colors duration-200 ">
+
+    <div className="flex flex-col h-full min-h-0">
+      <Toolbar editor={editor} />
+      
+      <div className="flex-1 overflow-y-auto min-h-0 editor-scroll bg-neutral-50 dark:bg-neutral-950">
+
+        <div className="min-h-full">
+          <EditorContent className="m-0 p-0" editor={editor} />
+        </div>
       </div>
     </div>
+
+    </div>
   </div>
+ </div>
+
 )
 
 }
