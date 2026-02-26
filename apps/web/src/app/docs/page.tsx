@@ -6,6 +6,7 @@ import {api} from "@/lib/api";
 import {DocumentCard,DocumentItem} from "@/components/doc/documentCard";
 import { CreateDocumentDialog } from "@/components/doc/createDocument";
 import { InvitesInbox } from "@/components/doc/invite/inviteInbox";
+import { backendApi } from "@/lib/backendApi";
 
 
 export default function DocsPage() {
@@ -50,9 +51,7 @@ export default function DocsPage() {
 
   const deleteDocument=async (docId:string) =>  {
     try{
-     const response=await api.delete("api/deleteDocument",{
-        data:{docId}
-     })
+      const response=await backendApi.delete(`/api/deleteDocument/${docId}`);
 
      setDocuments((prevDoc)=> prevDoc.filter((doc)=> doc.id!==docId));
   

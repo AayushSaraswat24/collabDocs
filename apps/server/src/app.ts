@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { authenticate } from "./middleware/auth";
 import router from "./routes/version";
+import documentDeleteRouter from "./routes/deleteDocument";
 
 export const app = express();
 
@@ -18,4 +19,8 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-app.use("/api",authenticate,router)
+// attaching auth middleware to all routes starting with /api
+app.use("/api",authenticate);
+
+app.use("/api",router)
+app.use("/api",documentDeleteRouter);

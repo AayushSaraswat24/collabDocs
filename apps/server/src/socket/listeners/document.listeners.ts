@@ -21,15 +21,6 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         return ack({ ok: false, error: "UNAUTHORIZED UserId missing" });
       }
       
-      const collaboration = await prisma.collaboration.findFirst({
-        where: { userId, documentId },
-      });
-      
-      if (!collaboration) {
-        return ack({ ok: false, error: "ACCESS_DENIED" });
-      }
-      
-      
       const documentData=await prisma.document.findUnique({
         where:{id:documentId}
       })
@@ -39,6 +30,14 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
         return ack({ ok: false, error: "DOCUMENT_NOT_FOUND" });
       }
       
+      const collaboration = await prisma.collaboration.findFirst({
+        where: { userId, documentId },
+      });
+      
+      if (!collaboration) {
+        return ack({ ok: false, error: "ACCESS_DENIED" });
+      }
+
       const state= await loadDocument(documentId);
       const update=Y.encodeStateAsUpdate(state.ydoc);
 
@@ -102,27 +101,18 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
   })
 
   
-  socket.on("document:cursor", ({ index }) => {
-    const { documentId, userId, userName ,role} = socket.data;
-    if (!documentId) return;
-
-    if(role!==Role.WRITE){
-      return ;
-    }
-
-    socket.to(documentId).emit("document:cursor", {
-      userId,
-      userName,
-      index,
-    });
-});
-
-
 socket.on("document:kick",async ({targetUserId},ack)=>{
 
   try{
 
-    
+    if(!targetUserId){
+      console.log("targetUserId : ", targetUserId);
+      return ack({
+        ok:false,
+        error:"TARGET_USER_ID_REQUIRED",
+      });
+    }
+
     const {documentId,userId,role}=socket.data;
     
     if(role===Role.READ){
@@ -132,14 +122,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
     if(!documentId || !userId){
       return ;
     }
-    
-    if(targetUserId === userId){
-      return ack({
-        ok:false,
-        error:"CANNOT_KICK_SELF",
-      });
-    }
-
+ 
     const document=await prisma.document.findUnique({
       where:{id:documentId},
       select:{ownerId:true},
@@ -152,6 +135,13 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
       });
     }
     
+    if(targetUserId === document.ownerId){
+      return ack({
+        ok:false,
+        error:"OWNER_CANNOT_BE_KICKED",
+      });
+    }
+
     await prisma.collaboration.deleteMany({
       where:{
         documentId,
@@ -159,6 +149,13 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
       }
     })
     
+    await prisma.collaborationInvite.deleteMany({
+      where:{
+        documentId:documentId,
+        inviteeId:targetUserId,
+      }
+    })
+
     kickUserFromRoom(io, documentId, targetUserId);
     removeUserByUserId(documentId,targetUserId);
     socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
@@ -212,7 +209,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
   }
 
    const activeUsers=getActiveUsers(documentId);
-  
+
    const users=collaboration.map((collab)=>({
     id:collab.user.id,
     name:collab.user.name,

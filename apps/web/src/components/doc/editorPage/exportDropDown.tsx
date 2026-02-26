@@ -14,9 +14,19 @@ export function ExportDropDown({ editor, fileName }: { editor: Editor | null; fi
        
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <button className="cursor-pointer">
+
+            <button className="cursor-pointer flex items-center gap-1 px-3 py-1.5
+            text-xs font-medium tracking-wide
+            text-neutral-400 dark:text-neutral-600
+            border border-dashed border-neutral-200 dark:border-neutral-700
+            rounded-lg 
+            hover:border-neutral-300 hover:text-neutral-600
+            dark:hover:border-neutral-600 dark:hover:text-neutral-400
+            transition-all duration-150
+            font-['DM_Sans',sans-serif]">
                 Export
             </button>
+            
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="mt-2 ">

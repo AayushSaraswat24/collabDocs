@@ -14,10 +14,18 @@ export async function POST(request:NextRequest){
         }
 
         const {email, documentId ,role=Role.READ}=await request.json();
+        
         if(!email || !documentId){
             return NextResponse.json({
                 success:false,
                 message:"insufficient data"
+            },{status:400});
+        }
+
+        if(role!==Role.READ && role!==Role.WRITE){
+            return NextResponse.json({
+                success:false,
+                message:"Invalid role"
             },{status:400});
         }
 

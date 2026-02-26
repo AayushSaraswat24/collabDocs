@@ -10,7 +10,6 @@ import { Editor } from "@/components/editor/editor";
 import { Awareness } from "y-protocols/awareness";
 import { getRandomColor } from "@/utils/randomCursorColor";
 import { useSession } from "next-auth/react";
-import { OptionBar } from "@/components/doc/editorPage/optionBar.";
 
 export default function DocPage() {
   const { id } = useParams();
@@ -100,4 +99,4 @@ return (
 )
 
 }
- // make other function work like live users add invite user option withit  , special feature for owner , document versioning . 
+ // make other function work special feature for owner , document versioning . reduce editor next line gap while press enter .add leave document option for non owner . awareness issue is still there it may be possible when new user connect it don't get the old user awareness object may be it need a brandNew . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . check how the editor readOnly thing works . update join error like it will keep showing reconnecting even if server return this document doesn't exists .

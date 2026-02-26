@@ -219,7 +219,7 @@ export async function destroyDocument(documentId: string) {
 
   if (doc.debounceTimer) clearTimeout(doc.debounceTimer)
 
-  // 🔥 remove update listener properly
+
   doc.ydoc.off("update", doc.updateHandler)
 
   doc.ydoc.destroy()

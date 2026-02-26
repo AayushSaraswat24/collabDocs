@@ -5,6 +5,7 @@ import { exportPDF } from '@/lib/exportClient'
 import {Editor} from "@tiptap/react"
 import { exportAsMarkdown, exportAsPlainText } from '@/lib/export/export';
 import { ExportDropDown } from './exportDropDown';
+import { ColloboratorsList } from './colloboratorsList';
 
 export interface Prop {
   status: "ready";
@@ -124,39 +125,13 @@ export function OptionBar({ joinState,editor }: OptionBarProps) {
         </div>
       </div>
 
-      {/* ── Right: collaborators + menu ── */}
+
       <div className="flex items-center gap-2 justify-end w-64">
 
-        {/* Active users — future */}
-        <button className="
-          flex items-center gap-1.5 px-3 py-1.5
-          text-xs font-medium tracking-wide
-          text-neutral-400 dark:text-neutral-600
-          border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg cursor-pointer
-          hover:border-neutral-300 hover:text-neutral-600
-          dark:hover:border-neutral-600 dark:hover:text-neutral-400
-          transition-all duration-150
-          font-['DM_Sans',sans-serif]
-        ">
-          <Users size={12} />
-          Collaborators
-        </button>
-
-        <button className="
-            flex items-center gap-1 px-3 py-1.5
-            text-xs font-medium tracking-wide
-            text-neutral-400 dark:text-neutral-600
-            border border-dashed border-neutral-200 dark:border-neutral-700
-            rounded-lg cursor-pointer
-            hover:border-neutral-300 hover:text-neutral-600
-            dark:hover:border-neutral-600 dark:hover:text-neutral-400
-            transition-all duration-150
-            font-['DM_Sans',sans-serif]
-          ">
-            <ExportDropDown editor={editor} fileName={joinState.docName} />  
-          
-          </button>        
+          <ColloboratorsList  owner={joinState.isOwner} documentId={joinState.documentId}/>
+    
+          <ExportDropDown editor={editor} fileName={joinState.docName} />  
+               
 
       </div>
 
