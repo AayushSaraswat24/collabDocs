@@ -1,9 +1,8 @@
 'use client'
 
-import { Users, ChevronDown, Cpu, History, Crown, Shield, Download } from 'lucide-react'
+import {Cpu, History, Crown, Shield,  } from 'lucide-react'
 import { exportPDF } from '@/lib/exportClient'
 import {Editor} from "@tiptap/react"
-import { exportAsMarkdown, exportAsPlainText } from '@/lib/export/export';
 import { ExportDropDown } from './exportDropDown';
 import { ColloboratorsList } from './colloboratorsList';
 
@@ -12,7 +11,6 @@ export interface Prop {
   documentId: string;
   role: "READ" | "WRITE";
   isOwner: boolean;
-  content: Uint8Array;
   docName: string;
 }
 

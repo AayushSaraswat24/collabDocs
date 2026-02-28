@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { socket } from "@/lib/socket";
+import * as Y from "yjs";
 
 type JoinState =
   | { status: "idle" }
@@ -18,7 +19,8 @@ type JoinState =
 
 export function useDocumentJoin(
   documentId: string,
-  enabled: boolean
+  enabled: boolean,
+  ydoc: Y.Doc
 ) {
   const [state, setState] = useState<JoinState>({ status: "idle" });
 
@@ -39,6 +41,8 @@ export function useDocumentJoin(
         });
         return;
       }
+
+      Y.applyUpdate(ydoc, new Uint8Array(res.content), "remote");
 
       setState({
         status: "ready",

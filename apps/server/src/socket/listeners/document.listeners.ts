@@ -232,10 +232,33 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
    socket.to(documentId).emit("document:awareness", update) 
 })
 
+socket.on("document:newUser",()=>{
+  const {documentId,userId}=socket.data;
+
+  if(!documentId || !userId){
+    return ;
+  }
+
+  socket.to(documentId).emit("document:newUser",socket.id);
+})
+
+socket.on("document:FullAwareness",({update,socketId})=>{
+  const {documentId,userId}=socket.data;
+
+  if(!documentId || !userId){
+    return ;
+  }
+  
+ io.to(socketId).emit("document:receiveFullAwareness", update)
+ 
+})
 
   socket.on("document:leave",({documentId}) =>{
+
     removeUser(documentId,socket.id);
     socket.leave(documentId);
+    delete socket.data.documentId;
+    delete socket.data.role;
   })
 
 
