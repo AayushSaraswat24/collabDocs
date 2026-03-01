@@ -13,6 +13,7 @@ import { InviteItem } from "./inviteItem";
 import { api } from "@/lib/api";
 import { Inbox } from "lucide-react";
 
+
 type Invite = {
   id: string;
   role: "READ" | "WRITE";
@@ -26,7 +27,11 @@ type Invite = {
   };
 };
 
-export function InvitesInbox() {
+interface Prop {
+  fetchDocs: () => void;
+}
+
+export function InvitesInbox({fetchDocs}:Prop) {
   const [open, setOpen] = useState(false);
   const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,6 +76,9 @@ export function InvitesInbox() {
       setInvites((prev) =>
         prev.filter((invite) => invite.id !== inviteId)
       );
+      if(isAccepted){
+        fetchDocs();
+      }
     } catch (err) {
       console.error("Invite action failed", err);
     } finally {

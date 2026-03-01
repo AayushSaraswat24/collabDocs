@@ -14,12 +14,20 @@ export function registerConnectionHandlers(io: Server) {
     registerDocumentHandlers(io,socket);
 
     socket.on("disconnect",async () => {
-      const {documentId,userId} = socket.data;
+      const {documentId,userId,yClientID ,wasKicked,userName} = socket.data;
       console.log(`Socket disconnected for user ${userId} from document ${documentId}`);
-      if(!documentId) return ;
+      if(!documentId || !yClientID) return ;
 
       removeUser(documentId,socket.id);
-      
+
+        if (wasKicked) {
+         socket.to(documentId).emit("document:userKicked", { userName });
+        } else {
+          socket.to(documentId).emit("document:userLeft", { userName });
+        }
+
+      // awareness removal
+      socket.to(documentId).emit("document:awareness:remove", {clientID:yClientID});
     });
 
 

@@ -33,15 +33,17 @@ export default function DocPage() {
     color: cursorColor,
   }), [session?.user?.id, session?.user?.name, cursorColor])
 
-  useYjsSocketSync( joinState.status === "ready" ? joinState.documentId : "",ydoc,awareness);
-
   useEffect(() => {
   if (!user?.id) return;
-  awareness.setLocalStateField("user", {
-    ...user
-  });
-}, [user, awareness]);
 
+  awareness.setLocalState({
+    user
+  });
+}, [user]);
+
+const ready = joinState.status === "ready" && !!user.id;
+
+useYjsSocketSync(ready ? joinState.documentId : "", ydoc, awareness);
 
   useEffect(() => {
     return () => {
@@ -90,4 +92,4 @@ return (
 )
 
 }
- // make other function work special feature for owner , document versioning . reduce editor next line gap while press enter .add leave document option for non owner . awareness issue is still there it may be possible when new user connect it don't get the old user awareness object may be it need a brandNew . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . update join error like it will keep showing reconnecting even if server return this document doesn't exists . i think the only option i have is to merge the socket + docJoin + other listner hook merge also need to refractor the awareness update and yjs update like they are not sending properly . as the socket connect emit the document:join on connection and leave room on socket dissconnect and as the socket unmount or page unmount disconnect socket .update yjs and attach awareness listener . then apply update and logic to send localState for new user .
+ // make other function work special feature for owner , document versioning . reduce editor next line gap while press enter .add leave document option for non owner  . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . update join error like it will keep showing reconnecting even if server return this document doesn't exists . add leave logic for non owner and update the colloboration list ui upon successfully kicking user but that gonna work for only owner .

@@ -49,7 +49,7 @@ export default function RootLayout({
           position="top-center"
           richColors
           closeButton
-          duration={3500}
+          duration={2000}
           />
         </Provider>
 

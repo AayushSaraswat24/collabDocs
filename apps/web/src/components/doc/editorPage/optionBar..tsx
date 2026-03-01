@@ -23,9 +23,7 @@ export function OptionBar({ joinState,editor }: OptionBarProps) {
 
   if(!editor) return ;
 
-  function handleExportPDF() {
-    exportPDF(joinState.docName)
-  }
+
  // on the basis on data-optionbar attribute 
   return (
     <header 

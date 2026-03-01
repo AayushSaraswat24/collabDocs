@@ -13,7 +13,8 @@ export function kickUserFromRoom(
     if (!s) continue;
 
     if (s.data.userId === targetUserId) {
-      s.emit("document:kicked");
+      s.data.wasKicked = true; 
+      
       s.leave(documentId);
       s.disconnect(true);
     }

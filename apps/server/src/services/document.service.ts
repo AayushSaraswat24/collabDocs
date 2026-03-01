@@ -15,9 +15,8 @@ type DocumentState = {
 
 const documents = new Map<string, DocumentState>()
 
-// ============================
 // LOAD OR CREATE
-// ============================
+
 export async function loadDocument(documentId: string) {
   if (documents.has(documentId)) {
     return documents.get(documentId)!
@@ -53,9 +52,9 @@ export async function loadDocument(documentId: string) {
   return state
 }
 
-// ============================
+
 // APPLY UPDATE
-// ============================
+
 export function applyYjsUpdate(documentId: string, update: Uint8Array) {
   const doc = documents.get(documentId)
   if (!doc) return false
@@ -64,9 +63,9 @@ export function applyYjsUpdate(documentId: string, update: Uint8Array) {
   return true
 }
 
-// ============================
+
 // USERS
-// ============================
+
 export function addUser(documentId: string, userId: string,socketId:string) {
   const doc = documents.get(documentId)
   if (!doc) return
@@ -74,7 +73,7 @@ export function addUser(documentId: string, userId: string,socketId:string) {
   doc.activeUsers.set(socketId,userId)
 
 }
-
+// user leave . remove socket as same id can be open in multiple tabs.
 export async function removeUser(documentId: string, socketId:string) {
   const doc = documents.get(documentId)
   if (!doc) return
@@ -86,6 +85,7 @@ export async function removeUser(documentId: string, socketId:string) {
   }
 }
 
+// if user get kicked remove its all sockets connection from this doc.
 export function removeUserByUserId(documentId: string, userId: string){
   const doc=documents.get(documentId);
   if(!doc) return ;
@@ -108,9 +108,9 @@ export function getYDoc(documentId: string) {
   return documents.get(documentId)?.ydoc
 }
 
-// ============================
+
 // PERSISTENCE
-// ============================
+
 function scheduleSave(documentId: string) {
   const doc = documents.get(documentId)
   if (!doc) return
@@ -166,9 +166,9 @@ finally{
 
 }
 
-// ============================
+
 // REVERT
-// ============================
+
 export async function revertDocument(
   documentId: string,
   versionContent: Uint8Array
@@ -208,9 +208,8 @@ export async function revertDocument(
   return newDoc
 }
 
-// ============================
 // DESTROY
-// ============================
+
 export async function destroyDocument(documentId: string) {
   const doc = documents.get(documentId)
   if (!doc) return

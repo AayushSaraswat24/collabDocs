@@ -32,8 +32,7 @@ export function useDocumentJoin(
     }
 
     setState({ status: "joining" });
-    console.log("firing document:join");
-    socket.emit("document:join", { documentId }, (res: any) => {
+    socket.emit("document:join", { documentId ,clientId:ydoc.clientID}, (res: any) => {
       if (!res?.ok) {
         setState({
           status: "error",

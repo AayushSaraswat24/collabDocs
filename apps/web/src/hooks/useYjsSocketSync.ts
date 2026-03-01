@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import * as Y from "yjs";
 import { socket } from "@/lib/socket";
 import { Awareness } from "y-protocols/awareness";
-import {encodeAwarenessUpdate,applyAwarenessUpdate} from "y-protocols/awareness";
+import {encodeAwarenessUpdate,applyAwarenessUpdate,removeAwarenessStates} from "y-protocols/awareness";
 import { toast } from "sonner";
 
 export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awareness) {
@@ -16,9 +16,7 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
         //update goes to server .
         const updateHandler=(update:Uint8Array,origin:any) =>{
             if(origin === "remote") return ;
-            console.log("updateHandler yjs ",ydoc.clientID)
             socket.emit("yjs:update",update)
-
         }
        
         // it passes the update as uint8Array already . remote is used to prevent infinte  server and client update loop .
@@ -38,7 +36,6 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
        const awarenessUpdateHandler = ({added,updated,removed}: any,origin:any) => {
         
         if(origin === "remote" ) return ;
-        console.log(`Sending awareness`)
         const changedClients = added.concat(updated).concat(removed);
 
         const update = encodeAwarenessUpdate(awareness, changedClients);
@@ -49,7 +46,6 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
         awareness.on('update', awarenessUpdateHandler);
 
         const socketAwarenessHandler = (update: Uint8Array) => {
-            console.log(`Getting the awareness ${update}`)
             applyAwarenessUpdate(awareness, new Uint8Array(update), "remote");
         };
 
@@ -59,42 +55,35 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
             toast(`${name} joined the document`);
         };
 
-    socket.on("document:userJoined", userJoinedHandler);
+       socket.on("document:userJoined", userJoinedHandler);
+
+       const removeAwarenessHandler = ({clientID}:{clientID:number}) => {
+        removeAwarenessStates(awareness, [clientID], "remote");
+      }
+
+       socket.on("document:awareness:remove", removeAwarenessHandler);
         
-        // one time to get other connected user awareness
-        socket.emit("document:newUser");
-
-        const newUserHandler=(socketId:string)=>{
-           console.log("new user joined , sending awarenss ",socketId);
-
-           const update = encodeAwarenessUpdate(
-            awareness,
-            Array.from(awareness.getStates().keys()) 
-           );
-
-            socket.emit("document:FullAwareness",{update,socketId});
+        const userKickedHandler = ({ userName }: { userName: any }) => {
+            toast(`${userName} was kicked from the document`);
         }
 
-        socket.on("document:newUser",newUserHandler)
-
-        const individualAwarenessHandler=(update: Uint8Array)=>{
-           console.log("getting others awareness");
-            applyAwarenessUpdate(awareness, new Uint8Array(update), "remote");
+        const userLeftHandler = ({ userName }: { userName: any }) => {
+            toast(`${userName} left the document`);
         }
 
-        socket.on("document:receiveFullAwareness", individualAwarenessHandler)
-            
-        console.log(`Reattaching listeners `);
+        socket.on("document:userKicked", userKickedHandler);
+        socket.on("document:userLeft", userLeftHandler);
 
         return () => {
           ydoc.off("update", updateHandler);
           awareness.off("update", awarenessUpdateHandler);
           socket.off("yjs:update", socketUpdateHandler);
           socket.off("document:awareness", socketAwarenessHandler);
-          socket.off("document:newUser",newUserHandler);
-          socket.off("document:FullAwareness", individualAwarenessHandler);
           socket.off("document:userJoined", userJoinedHandler);
-        };
+          socket.off("document:awareness:remove", removeAwarenessHandler);
+          socket.off("document:userKicked", userKickedHandler);
+          socket.off("document:userLeft", userLeftHandler);
+        } 
 
     },[documentId]);
 

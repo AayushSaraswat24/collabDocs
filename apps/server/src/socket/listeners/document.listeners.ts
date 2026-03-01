@@ -8,13 +8,13 @@ import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser, rem
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 
 
-  socket.on( "document:join",async ({ documentId }, ack) => {
+  socket.on( "document:join",async ({ documentId ,clientId}, ack) => {
     try{
 
       const userId = socket.data.userId;
       
-      if (!documentId) {
-        return ack({ ok: false, error: "DOCUMENT_ID_REQUIRED" });
+      if (!documentId || !clientId) {
+        return ack({ ok: false, error: "DOCUMENT_ID_OR_CLIENT_ID_MISSING" });
       }
       
       if(!userId || !socket.data.userName){
@@ -45,6 +45,7 @@ export function registerDocumentHandlers(io: Server, socket: Socket) {
       
       socket.data.documentId = documentId;
       socket.data.role = collaboration.role;
+      socket.data.yClientID=clientId;
       
       addUser(documentId,userId,socket.id);
       
@@ -158,7 +159,6 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
     kickUserFromRoom(io, documentId, targetUserId);
     removeUserByUserId(documentId,targetUserId);
-    socket.to(documentId).emit("document:userKicked",{userId:targetUserId});
 
     return ack({
       ok:true,
@@ -230,27 +230,6 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
    if (!documentId) return
 
    socket.to(documentId).emit("document:awareness", update) 
-})
-
-socket.on("document:newUser",()=>{
-  const {documentId,userId}=socket.data;
-
-  if(!documentId || !userId){
-    return ;
-  }
-
-  socket.to(documentId).emit("document:newUser",socket.id);
-})
-
-socket.on("document:FullAwareness",({update,socketId})=>{
-  const {documentId,userId}=socket.data;
-
-  if(!documentId || !userId){
-    return ;
-  }
-  
- io.to(socketId).emit("document:receiveFullAwareness", update)
- 
 })
 
   socket.on("document:leave",({documentId}) =>{

@@ -19,7 +19,10 @@ export function useSocketConnection() {
     }
 
     const onConnect = () => setStatus("connected");
-    const onDisconnect = () => setStatus("disconnected");
+    const onDisconnect = () =>{
+      setStatus("disconnected");
+      console.log(`Socket dissconnect `)
+    }
     const onConnectError = () => setStatus("error");
 
     socket.on("connect", onConnect);

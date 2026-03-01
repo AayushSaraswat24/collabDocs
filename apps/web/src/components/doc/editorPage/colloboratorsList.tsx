@@ -55,6 +55,7 @@ export function ColloboratorsList({ owner,documentId }: Props) {
         toast.error("Failed to kick user: " + (res?.error ?? "Unknown error"))
       }else{
         toast.success("User kicked successfully")
+        setUsers(prev => prev.filter(u => u.id !== targetUserId));
       }
     })
 

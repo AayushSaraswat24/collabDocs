@@ -15,7 +15,6 @@ export default function DocsPage() {
   const [error, setError] = useState(false);
   const router = useRouter();
 
-  
   useEffect(() => {
 
     fetchDocs();
@@ -87,7 +86,7 @@ export default function DocsPage() {
         </h1>
 
         <div className="flex sm:gap-4 gap-3">
-        <InvitesInbox />
+        <InvitesInbox fetchDocs={fetchDocs}/>
         <CreateDocumentDialog onCreated={onCreated} />
         </div>
 

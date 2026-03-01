@@ -29,7 +29,7 @@ type EditorProps = {
 
 export function Editor({ ydoc, awareness, readOnly, user,joinState }: EditorProps) {
 
- console.log("tipTap yjs ",ydoc.clientID)
+
   const provider = { awareness, doc: ydoc };
 
   const editor = useEditor({
