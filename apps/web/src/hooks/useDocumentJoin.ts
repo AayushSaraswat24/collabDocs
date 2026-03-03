@@ -54,7 +54,7 @@ export function useDocumentJoin(
     });
 
     return () =>{
-      socket.emit("document:leave",{documentId})
+      // socket.emit("document:leave",{documentId})
     }
     
   }, [documentId, enabled]);

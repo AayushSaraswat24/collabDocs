@@ -58,7 +58,6 @@ export async function loadDocument(documentId: string) {
 export function applyYjsUpdate(documentId: string, update: Uint8Array) {
   const doc = documents.get(documentId)
   if (!doc) return false
-  console.log("in buffer update function, type of update" , typeof update,update instanceof Uint8Array);
   Y.applyUpdate(doc.ydoc, update)
   return true
 }

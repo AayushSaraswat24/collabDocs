@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { socket } from "@/lib/socket"
-import { Users, MoreVertical } from "lucide-react"
+import { Users, MoreVertical, RefreshCw } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { InviteUserDialog } from "./inviteUserDialog"
+import { Button } from "@/components/ui/button"
 
 type User = {
   id: string
@@ -39,6 +40,10 @@ export function ColloboratorsList({ owner,documentId }: Props) {
   useEffect(() => {
     if (!open) return
 
+    getActiveUsers()
+  }, [open, socket])
+
+  const getActiveUsers = () => {
     setLoading(true)
 
     socket.emit("document:get:activeUsers", {}, (res: any) => {
@@ -47,7 +52,8 @@ export function ColloboratorsList({ owner,documentId }: Props) {
       }
       setLoading(false)
     })
-  }, [open, socket])
+
+  }
 
   const handleKick = (targetUserId: string) => {
     socket.emit("document:kick", { targetUserId },(res:any)=>{
@@ -60,6 +66,17 @@ export function ColloboratorsList({ owner,documentId }: Props) {
     })
 
   }
+
+  const handleLeave=()=>{
+    socket.emit("document:leave",{},(res:any)=>{
+      if(!res?.ok){
+        toast.error("Failed to leave document: " + (res?.error ?? "Unknown error"))
+      }else{
+        toast.success("You have left the document")
+      }
+    })
+  }
+
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -81,6 +98,20 @@ export function ColloboratorsList({ owner,documentId }: Props) {
         <SheetHeader className="p-4 border-b">
           <SheetTitle>Collaborators</SheetTitle>
         </SheetHeader>
+
+      <div className="px-4 flex items-center justify-end">
+          <button
+            onClick={getActiveUsers}
+            disabled={loading}
+            className="flex items-center gap-1 cursor-pointer text-xs text-muted-foreground 
+                      hover:text-foreground transition-colors disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </button>
+       </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
 
@@ -153,8 +184,11 @@ export function ColloboratorsList({ owner,documentId }: Props) {
         <div className="flex flex-col mb-4 items-center justify-center" >
 
         {
-          owner && (
+          owner ? (
             <InviteUserDialog documentId={documentId}/>
+          ) :(
+            <Button variant="destructive" className="cursor-pointer"
+            onClick={handleLeave}>Leave Document</Button>
           )
         }
         </div>

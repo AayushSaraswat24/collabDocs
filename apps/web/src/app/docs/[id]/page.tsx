@@ -53,27 +53,54 @@ useYjsSocketSync(ready ? joinState.documentId : "", ydoc, awareness);
   }, [ydoc,awareness]);
 
 
-  if (socketStatus === "connecting") {
-    return <div>Connecting to server...</div>;
-  }
+if (socketStatus === "connecting") {
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      <div className="w-6 h-6 rounded-full border-2 border-zinc-300 border-t-zinc-700 animate-spin" />
+      <p className="text-sm text-zinc-500 tracking-wide">Connecting to server...</p>
+    </div>
+  );
+}
 
-  if (socketStatus === "error") {
-    return <div>Server unreachable.</div>;
-  }
+if (socketStatus === "error") {
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-50 text-red-500 text-lg">✕</div>
+      <p className="text-sm font-medium text-red-500">Server unreachable</p>
+      <p className="text-xs text-zinc-400">Check your connection and try again</p>
+    </div>
+  );
+}
 
-  if (socketStatus === "disconnected") {
-    return <div>Reconnecting...</div>;
-  }
+if (socketStatus === "disconnected") {
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 text-zinc-400 text-lg">⊘</div>
+      <p className="text-sm font-medium text-zinc-500">Connection closed</p>
+    </div>
+  );
+}
 
-  if (joinState.status === "joining") {
-    return <div>Joining document...</div>;
-  }
+if (joinState.status === "joining") {
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      <div className="w-6 h-6 rounded-full border-2 border-zinc-300 border-t-zinc-700 animate-spin" />
+      <p className="text-sm text-zinc-500 tracking-wide">Joining document...</p>
+    </div>
+  );
+}
 
-  if (joinState.status === "error") {
-    return <div>Error: {joinState.error}</div>;
-  }
+if (joinState.status === "error") {
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-50 text-red-500 text-lg">✕</div>
+      <p className="text-sm font-medium text-red-500">Failed to join document</p>
+      <p className="text-xs text-zinc-400 max-w-xs text-center">{joinState.error}</p>
+    </div>
+  );
+}
 
-  if (joinState.status !== "ready") return null;
+if (joinState.status !== "ready") return null;
 
 return (
   <div className="flex flex-col flex-1 min-h-0 bg-neutral-50 dark:bg-neutral-950 transition-colors duration-200">
@@ -92,4 +119,10 @@ return (
 )
 
 }
- // make other function work special feature for owner , document versioning . reduce editor next line gap while press enter .add leave document option for non owner  . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . update join error like it will keep showing reconnecting even if server return this document doesn't exists . add leave logic for non owner and update the colloboration list ui upon successfully kicking user but that gonna work for only owner .
+
+ // make other function work special feature for owner , document versioning . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . make the ui responsive .
+
+ // tasks --
+ // 1. add versioning -- all write user can save and revert version .
+ // 2. add listener for remaining emits from server to show toast .
+ // 3. check env variable usage and prefix with NEXT_PUBLIC_ on next js app .

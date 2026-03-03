@@ -157,7 +157,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
       }
     })
 
-    kickUserFromRoom(io, documentId, targetUserId);
+    kickUserFromRoom(io, documentId, targetUserId,true);
     removeUserByUserId(documentId,targetUserId);
 
     return ack({
@@ -178,6 +178,82 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
   }
 
 })
+
+ socket.on("document:leave",async (req,ack) =>{
+
+    try{
+
+      const {userId,documentId}=socket.data;
+      if(!documentId || !userId){
+        return ack({
+          ok:false,
+          error:"UNAUTHORIZED"
+        });
+      }
+      
+      const document=await prisma.document.findUnique({
+        where:{
+          id:documentId,
+        },
+        select:{
+          id:true,
+          ownerId:true,
+        }
+      })
+      
+      if(!document){
+        return ack({
+          ok:false,
+          error:"DOCUMENT_NOT_FOUND"
+        });
+      }
+      
+      if(document.ownerId === userId){
+        return ack({
+          ok:false,
+          error:"OWNER_CANNOT_LEAVE_DOCUMENT",
+        });
+      }
+      
+      await prisma.collaboration.deleteMany({
+        where:{
+          documentId,
+          userId:userId,
+        }
+      })
+      
+      await prisma.collaborationInvite.deleteMany({
+        where:{
+          documentId:documentId,
+          inviteeId:userId,
+        }
+      })
+      
+      kickUserFromRoom(io, documentId, userId,false);
+      removeUserByUserId(documentId,userId);
+      
+      return ack({
+        ok:true,
+      });
+      
+    }catch(error){
+
+      console.error("Error in document:leave:", {
+        userId: socket.data.userId,
+        documentId: socket.data.documentId,
+        error: error instanceof Error ? error.message : error
+      });
+
+      return ack({
+        ok: false,
+        error: "INTERNAL_ERROR",
+      })
+
+    }
+
+  })
+
+
 
   socket.on("document:get:activeUsers" , async(req,ack) =>{
     const {documentId,userId}=socket.data;
@@ -231,14 +307,6 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
    socket.to(documentId).emit("document:awareness", update) 
 })
-
-  socket.on("document:leave",({documentId}) =>{
-
-    removeUser(documentId,socket.id);
-    socket.leave(documentId);
-    delete socket.data.documentId;
-    delete socket.data.role;
-  })
 
 
 }
