@@ -5,7 +5,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { useDocumentJoin } from "@/hooks/useDocumentJoin";
 import { useYjsSocketSync } from "@/hooks/useYjsSocketSync";
 import * as Y from "yjs";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Editor } from "@/components/editor/editor";
 import { Awareness } from "y-protocols/awareness";
 import { getRandomColor } from "@/utils/randomCursorColor";
@@ -16,7 +16,7 @@ export default function DocPage() {
   const socketStatus = useSocketConnection();
   const {data:session}=useSession();
 
-  const ydoc = useMemo(() => new Y.Doc(), []);
+  const [ydoc, setYdoc] = useState(() => new Y.Doc());
   // awareness to track all user cursor . heartbeat style algo .
   const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
   const cursorColor = useMemo(()=> getRandomColor(),[]);
@@ -43,7 +43,7 @@ export default function DocPage() {
 
 const ready = joinState.status === "ready" && !!user.id;
 
-useYjsSocketSync(ready ? joinState.documentId : "", ydoc, awareness);
+useYjsSocketSync(ready ? joinState.documentId : "", ydoc,setYdoc ,awareness);
 
   useEffect(() => {
     return () => {
@@ -107,6 +107,7 @@ return (
 
         {session?.user && (
           <Editor
+            key={ydoc.clientID} // re-mount editor on ydoc change to prevent desync
             ydoc={ydoc}
             awareness={awareness}
             readOnly={joinState.role === "READ"}
@@ -126,3 +127,5 @@ return (
  // 1. add versioning -- all write user can save and revert version .
  // 2. add listener for remaining emits from server to show toast .
  // 3. check env variable usage and prefix with NEXT_PUBLIC_ on next js app .
+
+// added the version fetch and saving feature . we don't need any explicit delete option as we auto delete version on creation when it exceed 10 versions . think about whether on rollback i delete the present version like the one on which im rolling back is that allright or not . then i have implemented a listener to rollback listen so we just need to provide a button based on role to click on revert and then check if that works well . 

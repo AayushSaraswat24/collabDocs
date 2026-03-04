@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {prisma} from "@collabdoc/db"
+import {prisma, Role} from "@collabdoc/db"
 import * as Y from "yjs"
 import { getIO } from "../socket";
 import { revertDocument } from "../services/document.service";
@@ -27,7 +27,10 @@ router.post("/revert",async (req,res) =>{
             where:{id:docId},
             select:{
                 id:true,
-                ownerId:true,
+                collaborations:{
+                    where:{userId},
+                    select:{role:true}
+                },
                 documentVersions:{
                     where:{id:versionId},
                     select:{content:true}
@@ -41,11 +44,11 @@ router.post("/revert",async (req,res) =>{
             return 
         }
 
-        if(document.ownerId !== userId){
+        if(document.collaborations.length ===0 || document.collaborations[0].role !== Role.WRITE){
             res.status(403).json({success:false,message:"Forbidden"});
-            return 
+            return ;
         }
-
+        
         const versionContent=new Uint8Array(document.documentVersions[0].content);
 
         const newDoc=await revertDocument(docId,versionContent);

@@ -1,10 +1,11 @@
 'use client'
 
 import {Cpu, History, Crown, Shield,  } from 'lucide-react'
-import { exportPDF } from '@/lib/exportClient'
 import {Editor} from "@tiptap/react"
 import { ExportDropDown } from './exportDropDown';
 import { ColloboratorsList } from './colloboratorsList';
+import DocumentVersionSheet from './versionSheet';
+import * as Y from "yjs";
 
 export interface Prop {
   status: "ready";
@@ -17,9 +18,10 @@ export interface Prop {
 interface OptionBarProps {
   joinState: Prop;
   editor: Editor | null;
+  ydoc: Y.Doc;
 }
 
-export function OptionBar({ joinState,editor }: OptionBarProps) {
+export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
 
   if(!editor) return ;
 
@@ -55,20 +57,10 @@ export function OptionBar({ joinState,editor }: OptionBarProps) {
         </button>
 
         {/* Version History — future */}
-        <button className="
-          flex items-center gap-1.5 px-3 py-1.5
-          text-xs font-medium tracking-wide
-          text-neutral-400 dark:text-neutral-600
-          border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg cursor-pointer
-          hover:border-neutral-300 hover:text-neutral-600
-          dark:hover:border-neutral-600 dark:hover:text-neutral-400
-          transition-all duration-150
-          font-['DM_Sans',sans-serif]
-        ">
-          <History size={12} />
-          History
-        </button>
+        <div className="">
+          <DocumentVersionSheet joinState={joinState} ydoc={ydoc} />
+        </div>
+        
       </div>
 
       {/* ── Center: doc name + badges ── */}

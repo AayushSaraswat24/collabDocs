@@ -80,7 +80,7 @@ export function InviteUserDialog({ documentId }: { documentId: string }) {
       if (!val) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button variant="outline">Invite Users</Button>
+        <Button variant="outline" className="cursor-pointer">Invite Users</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">

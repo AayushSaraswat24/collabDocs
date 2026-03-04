@@ -53,11 +53,9 @@ export function useDocumentJoin(
       });
     });
 
-    return () =>{
-      // socket.emit("document:leave",{documentId})
-    }
+
     
-  }, [documentId, enabled]);
+  }, [documentId, enabled,ydoc]);
 
   return state;
 }

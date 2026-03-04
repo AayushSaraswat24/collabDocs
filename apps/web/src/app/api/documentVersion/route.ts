@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import {prisma} from "@collabdoc/db"
+import  {Role} from "@collabdoc/db";
 
 export async function POST(request:NextRequest){
     try{
@@ -25,27 +26,23 @@ export async function POST(request:NextRequest){
         // whole crdt state for versioning .
         const update=Buffer.from(base64,'base64');
         
-        const document=await prisma.document.findUnique({
+        const role= await prisma.collaboration.findUnique({
             where:{
-                id:docId
-            },
-            select:{
-                id:true,
-                ownerId:true
-            }
-        });
+                 userId_documentId:{
+                    userId:session.user.id,
+                    documentId:docId
+                }
+                },
+                select:{
+                    id:true,
+                    role:true
+                }
+        })
 
-        if(!document){
+        if(!role || role.role !== Role.WRITE ){
             return NextResponse.json({
               success: false,
-              message: "Document not found"
-            }, { status: 404 });
-        }
-
-        if(document.ownerId !== session.user.id){
-            return NextResponse.json({
-              success: false,
-              message: "unauthorized to save version"
+              message: "Unauthorized to access document"
             }, { status: 403 });
         }
 
@@ -54,14 +51,14 @@ export async function POST(request:NextRequest){
             // raw query to lock the document row to prevent race conditions, other transactions trying to save version for same document will wait until lock is released.
             await tx.$executeRaw`
                 SELECT id FROM "Document"
-                WHERE id = ${document.id}
+                WHERE id = ${docId}
                 FOR UPDATE
             `;
 
             
             await tx.documentVersion.create({
                 data: {
-                documentId: document.id,
+                documentId: docId,
                 name: name ?? null,
                 content: update
                 }
@@ -69,7 +66,7 @@ export async function POST(request:NextRequest){
 
             // Keep only latest 10
             const versions = await tx.documentVersion.findMany({
-                where: { documentId: document.id },
+                where: { documentId: docId },
                 orderBy: { createdAt: "desc" },
                 skip: 10,
                 select: { id: true }

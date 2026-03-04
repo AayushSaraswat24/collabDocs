@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import {prisma} from "@collabdoc/db"
 
+
 export async function POST(request:NextRequest){
     try{
         const session = await getServerSession(authOptions);
@@ -19,6 +20,25 @@ export async function POST(request:NextRequest){
               success: false,
               message: "documentId is required"
             }, { status: 400 });
+        }
+
+        const collab= await prisma.collaboration.findUnique({
+            where:{
+                 userId_documentId:{
+                    userId:session.user.id,
+                    documentId:documentId
+                }
+                },
+                select:{
+                    id:true,
+                }
+        })
+
+        if(!collab){
+            return NextResponse.json({
+              success: false,
+              message: "Unauthorized to access document"
+            }, { status: 403 });
         }
 
         const document=await prisma.document.findUnique({
@@ -40,8 +60,8 @@ export async function POST(request:NextRequest){
                 }
             }
         })
-
-        if(!document || document.ownerId !== session.user.id){
+        
+        if(!document){
             return NextResponse.json({
               success: false,
               message: "Document not found"

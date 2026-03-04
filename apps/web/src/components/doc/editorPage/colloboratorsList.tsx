@@ -94,7 +94,7 @@ export function ColloboratorsList({ owner,documentId }: Props) {
         </button>
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col p-0 sm:max-w-md ">
+      <SheetContent className="flex flex-col p-0 sm:max-w-md [&>button]:cursor-pointer ">
         <SheetHeader className="p-4 border-b">
           <SheetTitle>Collaborators</SheetTitle>
         </SheetHeader>

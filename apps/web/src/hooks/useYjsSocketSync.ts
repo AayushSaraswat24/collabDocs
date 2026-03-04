@@ -7,7 +7,7 @@ import { Awareness } from "y-protocols/awareness";
 import {encodeAwarenessUpdate,applyAwarenessUpdate,removeAwarenessStates} from "y-protocols/awareness";
 import { toast } from "sonner";
 
-export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awareness) {
+export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, setYdoc:React.Dispatch<React.SetStateAction<Y.Doc>>,awareness:Awareness) {
 
     useEffect(()=>{
 
@@ -74,6 +74,15 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
         socket.on("document:userKicked", userKickedHandler);
         socket.on("document:userLeft", userLeftHandler);
 
+        // hard reset listner here to create a new ydoc as the buffer is updated and it will fetch the new doc from there . also add toast .
+        const revertHandler=()=>{
+            const newDoc=new Y.Doc();
+            setYdoc(newDoc);
+            toast("Document reverted to selected version");
+        }
+
+        socket.on("document:reverted", revertHandler);
+
         return () => {
           ydoc.off("update", updateHandler);
           awareness.off("update", awarenessUpdateHandler);
@@ -83,8 +92,9 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, awareness:Awaren
           socket.off("document:awareness:remove", removeAwarenessHandler);
           socket.off("document:userKicked", userKickedHandler);
           socket.off("document:userLeft", userLeftHandler);
+          socket.off("document:reverted", revertHandler);
         } 
 
-    },[documentId]);
+    },[documentId,ydoc,awareness]);
 
 }

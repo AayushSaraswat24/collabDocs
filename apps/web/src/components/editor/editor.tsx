@@ -95,7 +95,7 @@ export function Editor({ ydoc, awareness, readOnly, user,joinState }: EditorProp
 return (
   <div className="flex flex-col flex-1 min-h-0">
 
-  <OptionBar joinState={joinState} editor={editor} />
+  <OptionBar joinState={joinState} editor={editor} ydoc={ydoc}/>
   
       <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
         <div 
