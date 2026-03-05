@@ -75,13 +75,13 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, setYdoc:React.Di
         socket.on("document:userLeft", userLeftHandler);
 
         // hard reset listner here to create a new ydoc as the buffer is updated and it will fetch the new doc from there . also add toast .
-        const revertHandler=()=>{
+        const revertHandler=({userName}: { userName: String })=>{
             const newDoc=new Y.Doc();
             setYdoc(newDoc);
-            toast("Document reverted to selected version");
+            toast(`${userName} reverted the document to the selected version`);
         }
 
-        socket.on("document:reverted", revertHandler);
+        socket.on("documentReverted", revertHandler);
 
         return () => {
           ydoc.off("update", updateHandler);
@@ -92,7 +92,7 @@ export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, setYdoc:React.Di
           socket.off("document:awareness:remove", removeAwarenessHandler);
           socket.off("document:userKicked", userKickedHandler);
           socket.off("document:userLeft", userLeftHandler);
-          socket.off("document:reverted", revertHandler);
+          socket.off("documentReverted", revertHandler);
         } 
 
     },[documentId,ydoc,awareness]);

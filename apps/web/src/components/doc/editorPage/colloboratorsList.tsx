@@ -160,7 +160,7 @@ export function ColloboratorsList({ owner,documentId }: Props) {
               {owner && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="p-1 rounded hover:bg-muted">
+                    <button className="p-1 rounded hover:bg-muted cursor-pointer">
                       <MoreVertical size={16} />
                     </button>
                   </DropdownMenuTrigger>

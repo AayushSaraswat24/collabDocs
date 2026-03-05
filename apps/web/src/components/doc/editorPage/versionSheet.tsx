@@ -11,11 +11,20 @@ import {
   SheetTrigger
 } from "@/components/ui/sheet";
 
-import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { MoreVertical, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import SaveVersionDialog from "./versionSaveDialogue";
 import * as Y from "yjs";
 import { History, RefreshCw } from "lucide-react";
+import { backendApi } from "@/lib/backendApi";
+
 
 interface Prop {
   status: "ready";
@@ -28,6 +37,7 @@ interface Prop {
 interface OptionBarProps {
   joinState: Prop;
    ydoc: Y.Doc;
+   isWrite: boolean;
 }
 
 interface Version {
@@ -36,11 +46,12 @@ interface Version {
   createdAt: string;
 }
 
-export default function DocumentVersionSheet({ joinState,ydoc }: OptionBarProps) {
+export default function DocumentVersionSheet({ joinState,ydoc ,isWrite }: OptionBarProps) {
 
   const [versions, setVersions] = useState<Version[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [reverting, setreverting] = useState(false);
 
   async function fetchVersions() {
     try {
@@ -62,6 +73,26 @@ export default function DocumentVersionSheet({ joinState,ydoc }: OptionBarProps)
       setLoading(false);
     }
 
+  }
+
+  const onRevert=async (versionId: string)=>{
+    try{
+      setreverting(true);
+
+      const res= await backendApi.post("/api/revert",{
+         docId: joinState.documentId, 
+         versionId : versionId
+      })
+
+      if(res.data.success){
+        toast.success("Document reverted successfully");
+        setOpen(false);
+      }
+    }catch(err:any){
+      toast.error(err?.response?.data?.message ?? "Failed to revert version");
+    }finally{
+      setreverting(false);
+    }
   }
 
   useEffect(() => {
@@ -127,20 +158,53 @@ export default function DocumentVersionSheet({ joinState,ydoc }: OptionBarProps)
             </p>
           )}
 
-          {versions.map(v => (
+          {!loading && versions.map(v => (
             <div
               key={v.id}
-              className="border rounded-md p-3 text-sm"
+              className="border flex justify-between rounded-md p-3 text-sm"
             >
+              <div className="">
               {formatVersion(v)}
-            </div>
+              </div>
+
+                {isWrite && (
+
+                  <DropdownMenu>
+
+                    <DropdownMenuTrigger asChild>
+                          <button
+                            className=" p-1 rounded hover:bg-muted cursor-pointer"
+                            >
+                            <MoreVertical size={16} />
+                          </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end" className="w-36">
+
+                          <DropdownMenuItem
+                            onClick={() => onRevert(v.id)}
+                            className="cursor-pointer"
+                            >
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            Revert
+                          </DropdownMenuItem>
+
+                    </DropdownMenuContent>
+
+                  </DropdownMenu>
+                      
+                )}             
+            
+              
+          </div>
+
           ))}
 
         </div>
 
         <div className="flex flex-col mb-4 items-center justify-center" >
 
-            {joinState.role === "WRITE" && (
+            {isWrite && (
                 <SaveVersionDialog joinState={joinState} ydoc={ydoc} fetchVersion={fetchVersions} />
             )}
 

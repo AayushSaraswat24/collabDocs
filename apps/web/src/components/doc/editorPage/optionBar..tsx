@@ -56,9 +56,9 @@ export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
           AI
         </button>
 
-        {/* Version History — future */}
+        {/* Version History */}
         <div className="">
-          <DocumentVersionSheet joinState={joinState} ydoc={ydoc} />
+          <DocumentVersionSheet joinState={joinState} ydoc={ydoc} isWrite={joinState.role === "WRITE"}  />
         </div>
         
       </div>

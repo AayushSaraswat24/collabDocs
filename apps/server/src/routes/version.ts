@@ -8,11 +8,11 @@ const router=Router();
 
 router.post("/revert",async (req,res) =>{
     try{
-
+        console.log(`Getting revert req`)
         const { docId, versionId } = req.body;
         // directly attached to request from middleware .
         const { userId, userName } = req;
-
+        console.log(`clearing checks`)
         if(!userId || !userName){
             res.status(401).json({success:false,message:"Unauthorized"});
             return 
@@ -58,7 +58,6 @@ router.post("/revert",async (req,res) =>{
             return 
         }
 
-        const update=Y.encodeStateAsUpdate(newDoc);
 
         await prisma.documentVersion.delete({
             where:{id:versionId}
@@ -67,7 +66,7 @@ router.post("/revert",async (req,res) =>{
         const io=getIO();
 
         io.to(docId).emit("documentReverted",{
-            update:update,
+            userName,
         })
 
         res.status(200).json({success:true,message:"Document reverted successfully"});
