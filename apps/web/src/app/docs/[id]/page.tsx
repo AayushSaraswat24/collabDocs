@@ -121,11 +121,9 @@ return (
 
 }
 
- // make other function work special feature for owner , document versioning . need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . make the ui responsive .
+ // need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . make the ui responsive .
 
  // tasks --
- // 1. add versioning -- all write user can save and revert version .
+ // 1. check all 3 ai route and wire them on frontEnd . you need to make all 3 buttons for 3 ai function and enable 2 on text selection only .
  // 2. add listener for remaining emits from server to show toast .
  // 3. check env variable usage and prefix with NEXT_PUBLIC_ on next js app .
-
-// added the version fetch and saving feature . we don't need any explicit delete option as we auto delete version on creation when it exceed 10 versions . think about whether on rollback i delete the present version like the one on which im rolling back is that allright or not . then i have implemented a listener to rollback listen so we just need to provide a button based on role to click on revert and then check if that works well . 
