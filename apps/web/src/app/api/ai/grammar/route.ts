@@ -54,7 +54,6 @@ export async function POST(request:NextRequest) {
         temperature:0.2,
         topP:0.8,
         topK:20,
-        maxOutputTokens:200,
         candidateCount:1,
         systemInstruction:`
         You are a grammar correction assistant.
@@ -79,7 +78,7 @@ export async function POST(request:NextRequest) {
 
           for await (const chunk of geminiStream){
             const text=chunk.text;
-
+            console.log(`${text}`)
             if(text){
               controller.enqueue(encoder.encode(text));
             }

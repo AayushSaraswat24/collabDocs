@@ -233,6 +233,11 @@
   background: rgba(184, 134, 11, 0.3);
 }
 
+[data-ai-placeholder]::before {
+  content: "AI is writing…";
+  color: #9ca3af;
+  font-style: italic;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

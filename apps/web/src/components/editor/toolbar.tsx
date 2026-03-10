@@ -7,48 +7,29 @@ import {
   List, ListOrdered, Heading1, Heading2, Heading3,
   Code2, Quote, Minus, Undo2, Redo2, Eraser,
 } from 'lucide-react'
+import { Btn } from './toolbarHelper'
+import { Sep } from './toolbarHelper'
+import { Group } from './toolbarHelper'
+import { handleAI } from '@/lib/editor/toolbarHelper'
 
 type Props = { editor: Editor | null }
-
-function Btn({onClick, active, title, children, disabled,}: {onClick: () => void ,
-  active?: boolean , title: string , children: React.ReactNode,disabled?: boolean}) {
-  return (
-    <button type="button" onClick={onClick} title={title} aria-pressed={active} disabled={disabled}
-      className={`
-        w-8 h-8 flex items-center justify-center rounded-md transition-all duration-100 outline-none
-        font-['DM_Sans',sans-serif] disabled:opacity-30 disabled:cursor-not-allowed
-        ${active
-          ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900'
-          : `text-neutral-400 dark:text-neutral-500
-             hover:bg-neutral-100 dark:hover:bg-neutral-800
-             hover:text-neutral-800 dark:hover:text-neutral-200`
-        }
-      `}
-    >
-      {children}
-    </button>
-  )
-}
-
-function Sep() {
-  return <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-700 mx-0.5 shrink-0" />
-}
-
-function Group({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center gap-0.5">{children}</div>
-}
 
 function useEditorActive(editor: Editor | null) {
   const [, forceUpdate] = useState(0)
 // listening for cursor or conent change in tipTap so we can Re-render the toolbar using useState.
   useEffect(() => {
+
     if (!editor) return
     const update = () => forceUpdate(n => n + 1)
+    
     editor.on('transaction', update)
     editor.on('selectionUpdate', update)
+    editor.on('blur', update)
+
     return () => {
       editor.off('transaction', update)
       editor.off('selectionUpdate', update)
+      editor.off('blur', update)
     }
   }, [editor])
 
@@ -75,21 +56,30 @@ function useEditorActive(editor: Editor | null) {
 
 
 export default function Toolbar({ editor }: Props) {
-  const editorState = useEditorActive(editor)
-  if (!editor) return null
 
+   const editorState = useEditorActive(editor)
+   const [aiAction, setAiAction] = useState<null | "rewrite" | "grammar" | "summary">(null)
+
+   if (!editor) return null
+  if (!editor.isEditable) return null ;
+  // gonna work fine as im reRendering this component on select or other changes on editor.
+  const hasSelection = editor.state.selection.from !== editor.state.selection.to
+  
+  const aiBtn =
+  ` px-2 py-1 text-xs rounded transition-colors cursor-pointer text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent `
 
   const s = 14
 
   return (
     <div 
       className="
-      flex flex-wrap items-center gap-1
+      flex items-center gap-1
+      overflow-x-auto
+      whitespace-nowrap
       px-4 py-2
       bg-white dark:bg-neutral-900
       border-b border-neutral-100 dark:border-neutral-800
       sticky top-0 z-40
-      transition-colors
     ">
       <Group>
         <Btn onClick={() => editor.chain().focus().undo().run()} title="Undo">
@@ -158,6 +148,43 @@ export default function Toolbar({ editor }: Props) {
           <Eraser size={s} />
         </Btn>
       </Group>
+
+      <Sep />
+
+      <div className="items-center gap-0.5 flex">
+        
+        <button
+          disabled={!hasSelection || aiAction !== null}
+          onClick={() =>
+            handleAI("/api/ai/rewrite", editor, () => setAiAction("rewrite"), () => setAiAction(null))
+          }
+          className={aiBtn}
+        >
+          {aiAction === "rewrite" ? "AI working..." : "Rewrite"}
+        </button>
+
+        <button
+          disabled={!hasSelection || aiAction !== null}
+          onClick={() =>
+            handleAI("/api/ai/grammar", editor, () => setAiAction("grammar"), () => setAiAction(null))
+          }
+          className={aiBtn}
+        >
+          {aiAction === "grammar" ? "AI working..." : "Grammar"}
+        </button>
+
+        <button
+          disabled={!hasSelection || aiAction !== null}
+          onClick={() =>
+            handleAI("/api/ai/summary", editor, () => setAiAction("summary"), () => setAiAction(null))
+          }
+          className={aiBtn}
+        >
+          {aiAction === "summary" ? "AI working..." : "Summary"}
+        </button>
+
+      </div>
+
     </div>
   )
 }

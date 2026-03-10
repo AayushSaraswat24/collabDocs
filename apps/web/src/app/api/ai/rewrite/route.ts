@@ -7,7 +7,7 @@ import { gemini } from "@/lib/ai/geminit";
 export async function POST(request:NextRequest) {
 
   try{
-
+  
     const session=await getServerSession(authOptions);
     
     if(!session || !session.user.id){
@@ -54,7 +54,6 @@ export async function POST(request:NextRequest) {
         temperature:0.2,
         topP:0.8,
         topK:20,
-        maxOutputTokens:200,
         candidateCount:1,
         systemInstruction:`
         You are a professional writing assistant.

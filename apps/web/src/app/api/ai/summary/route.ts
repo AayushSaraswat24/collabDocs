@@ -54,7 +54,6 @@ export async function POST(request:NextRequest) {
         temperature:0.2,
         topP:0.8,
         topK:20,
-        maxOutputTokens:400,
         candidateCount:1,
         systemInstruction:`
         You are a text summarization assistant.

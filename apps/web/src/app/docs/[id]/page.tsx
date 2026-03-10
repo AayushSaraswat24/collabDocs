@@ -121,9 +121,8 @@ return (
 
 }
 
- // need to make a function that will listen for other event and show them by toast . check where you have used the env variable and if that accessible without next_public prefix . make the ui responsive .
 
  // tasks --
- // 1. check all 3 ai route and wire them on frontEnd . you need to make all 3 buttons for 3 ai function and enable 2 on text selection only .
  // 2. add listener for remaining emits from server to show toast .
  // 3. check env variable usage and prefix with NEXT_PUBLIC_ on next js app .
+ // 4. reduce editor padding on small screen .

@@ -12,6 +12,7 @@ import Toolbar from "./toolbar";
 import { OptionBar } from "../doc/editorPage/optionBar.";
 import { Prop } from "../doc/editorPage/optionBar.";
 import { Markdown } from 'tiptap-markdown'
+import { AiPlaceholder } from "./aiPlaceHolderExtension";
 
 type EditorUser = {
   id: string;
@@ -46,6 +47,8 @@ export function Editor({ ydoc, awareness, readOnly, user,joinState }: EditorProp
 
       Underline,
 
+      AiPlaceholder,
+      
       Collaboration.configure({
         document: ydoc,
       }),
