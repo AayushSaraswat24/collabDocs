@@ -16,10 +16,7 @@ export function NavbarCenter() {
       <NavLink href="/docs" active={pathname.startsWith("/docs")}>
         Docs
       </NavLink>
-      
-      <NavLink href="/testdocument" active={pathname.startsWith("/testdocument")}>
-        TestDocs
-      </NavLink>
+   
     </div>
   )
 }

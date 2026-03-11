@@ -32,7 +32,7 @@ export default function LoginPage() {
 
          
           <button
-            onClick={() => signIn("google", { callbackUrl: "/testdocs", redirect: false })}
+            onClick={() => signIn("google", { callbackUrl: "/docs", redirect: false })}
             className="w-full flex items-center justify-center gap-3 bg-background hover:bg-accent text-foreground font-medium py-3 px-4 rounded-lg border border-input shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98] cursor-pointer"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">

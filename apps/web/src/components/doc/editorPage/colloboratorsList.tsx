@@ -81,20 +81,17 @@ export function ColloboratorsList({ owner,documentId }: Props) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="gap-2 text-xs font-medium tracking-wide px-3 py-1.5 flex items-center 
-          text-neutral-400 dark:text-neutral-600
-          border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg cursor-pointer
-          hover:border-neutral-300 hover:text-neutral-600
-          dark:hover:border-neutral-600 dark:hover:text-neutral-400
-          transition-all duration-150
-          font-['DM_Sans',sans-serif]">
-          <Users className="h-4 w-4" />
-          Collaborators
-        </button>
+        <button
+        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5
+        text-xs font-medium tracking-wide text-neutral-400 dark:text-neutral-600  border border-dashed border-neutral-200 dark:border-neutral-700
+        rounded-lg cursor-pointer  hover:border-neutral-300 hover:text-neutral-600 dark:hover:border-neutral-600 dark:hover:text-neutral-400 transition-all duration-150 font-['DM_Sans',sans-serif] ">
+        <Users className="h-4 w-4" />
+        <span className="hidden sm:inline">Collaborators</span>
+      </button>
+
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col p-0 sm:max-w-md [&>button]:cursor-pointer ">
+      <SheetContent className="w-full sm:max-w-md flex flex-col [&>button]:cursor-pointer ">
         <SheetHeader className="p-4 border-b">
           <SheetTitle>Collaborators</SheetTitle>
         </SheetHeader>

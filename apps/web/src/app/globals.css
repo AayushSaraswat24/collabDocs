@@ -3,9 +3,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* vertical scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px; /* THIS fixes horizontal scrollbar thickness */
+}
 
+::-webkit-scrollbar-thumb {
+  background: rgba(120,120,120,0.3);
+  border-radius: 6px;
+}
 
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120,120,120,0.5);
+}
 /* ── Placeholder ─────────────────────────────────────────────────────────────── */
 
 .tiptap p.is-editor-empty:first-child::before {
@@ -58,7 +69,7 @@
 /* ── ProseMirror — Light ─────────────────────────────────────────────────────── */
 
 .ProseMirror {
-  padding: 3.5rem 4rem 6rem;
+  padding: 2.5rem 2rem 4rem;
   min-height: 500px;
   outline: none;
   font-size: 17.5px;

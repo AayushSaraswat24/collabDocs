@@ -107,7 +107,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
   try{
 
     if(!targetUserId){
-      console.log("targetUserId : ", targetUserId);
+
       return ack({
         ok:false,
         error:"TARGET_USER_ID_REQUIRED",
@@ -253,8 +253,6 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
   })
 
-
-
   socket.on("document:get:activeUsers" , async(req,ack) =>{
     const {documentId,userId}=socket.data;
 
@@ -291,13 +289,13 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
     name:collab.user.name,
     email:collab.user.email,
     isActive:activeUsers.has(collab.user.id),
+    
    }))
-
 
    return ack({
     ok: true,
     users,
-  });
+   });
 
   })
 
@@ -306,7 +304,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
    if (!documentId) return
 
    socket.to(documentId).emit("document:awareness", update) 
-})
+  })
 
 
 }

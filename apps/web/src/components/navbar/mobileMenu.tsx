@@ -21,9 +21,7 @@ export function MobileMenu({
         <Link href="/docs" onClick={onClose} className="text-sm font-medium">
           Docs
         </Link>
-        <Link href="/signin" onClick={onClose} className="text-sm font-medium">
-          Sign in
-        </Link>
+   
       </div>
     </div>
   )

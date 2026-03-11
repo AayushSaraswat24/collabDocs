@@ -89,7 +89,7 @@ export function InvitesInbox({fetchDocs}:Prop) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline">
+        <Button className="cursor-pointer" variant="outline">
           <Inbox className="h-4 w-4" />
         </Button>
       </SheetTrigger>

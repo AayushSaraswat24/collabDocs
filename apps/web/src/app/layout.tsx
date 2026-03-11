@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
       >
-        <div className="flex h-screen flex-col overflow-hidden">
+        <div className="flex h-screen flex-col ">
 
         <ThemeProvider>
 
@@ -39,7 +39,7 @@ export default function RootLayout({
 
           <Navbar />
 
-        <div className="flex flex-col flex-1 min-h-0 overflow-hidden ">
+        <div className="flex flex-col flex-1 min-h-0  ">
 
          {children}
 

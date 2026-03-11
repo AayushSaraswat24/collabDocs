@@ -65,7 +65,7 @@ export function CreateDocumentDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button >Create Document</Button>
+        <Button className="cursor-pointer">Create Document</Button>
       </DialogTrigger>
 
       <DialogContent>

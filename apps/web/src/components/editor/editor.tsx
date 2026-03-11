@@ -100,7 +100,7 @@ return (
 
   <OptionBar joinState={joinState} editor={editor} ydoc={ydoc}/>
   
-      <div className="flex-1 min-h-0 flex flex-col py-6 px-4 gap-0">
+      <div className="flex-1 min-h-0 flex flex-col py-4 px-3 md:px-6 lg:px-8 gap-0">
         <div 
          className=" flex-1 min-h-0 mx-auto w-full max-w-4xl bg-white dark:bg-neutral-900
           border border-neutral-200 dark:border-neutral-800 rounded-xl
@@ -116,6 +116,7 @@ return (
         <div className="min-h-full">
           <EditorContent className="m-0 p-0" editor={editor} />
         </div>
+        
       </div>
     </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import {Cpu, History, Crown, Shield,  } from 'lucide-react'
+import { Crown, Shield,  } from 'lucide-react'
 import {Editor} from "@tiptap/react"
 import { ExportDropDown } from './exportDropDown';
 import { ColloboratorsList } from './colloboratorsList';
@@ -25,57 +25,28 @@ export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
 
   if(!editor) return ;
 
-
- // on the basis on data-optionbar attribute 
   return (
     <header 
-     className="
-      flex items-center justify-between
-      px-5 py-0
-      h-14
-      bg-white dark:bg-neutral-900
-      border-b border-neutral-100 dark:border-neutral-800
-      shrink-0
-    ">
+     className="flex items-center justify-between h-14 px-2 sm:px-5 bg-white dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 shrink-0 overflow-x-auto">
 
-      {/* ── Left: future actions placeholder ── */}
-      <div className="flex items-center gap-2 w-64">
-        {/* AI Button — future */}
-        <button className="
-          flex items-center gap-1.5 px-3 py-1.5
-          text-xs font-medium tracking-wide
-          text-neutral-400 dark:text-neutral-600
-          border border-dashed border-neutral-200 dark:border-neutral-700
-          rounded-lg cursor-pointer
-          hover:border-neutral-300 hover:text-neutral-600
-          dark:hover:border-neutral-600 dark:hover:text-neutral-400
-          transition-all duration-150
-          font-['DM_Sans',sans-serif]
-        ">
-          <Cpu size={12} />
-          AI
-        </button>
+      <div className="flex items-center gap-2 shrink-0">
 
-        {/* Version History */}
-        <div className="">
           <DocumentVersionSheet joinState={joinState} ydoc={ydoc} isWrite={joinState.role === "WRITE"}  />
-        </div>
         
       </div>
 
-      {/* ── Center: doc name + badges ── */}
-      <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1">
+      <div className="hidden sm:flex flex-col items-center gap-0.5 min-w-0 flex-1 px-2">
         <h1 className="
           text-sm font-semibold
           text-neutral-800 dark:text-neutral-100
-          truncate max-w-64
+          truncate max-w-35 sm:max-w-55 md:max-w-[320px]
           tracking-tight
           font-['DM_Sans',sans-serif]
         ">
           {joinState.docName}
         </h1>
 
-        <div className="flex items-center gap-1.5">
+        <div className="hidden sm:flex items-center gap-1.5">
           {joinState.isOwner ? (
             <span className="
               flex items-center gap-1
@@ -114,13 +85,12 @@ export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
       </div>
 
 
-      <div className="flex items-center gap-2 justify-end w-64">
+      <div className="flex items-center gap-2 shrink-0">
 
           <ColloboratorsList  owner={joinState.isOwner} documentId={joinState.documentId}/>
     
           <ExportDropDown editor={editor} fileName={joinState.docName} />  
                
-
       </div>
 
     </header>

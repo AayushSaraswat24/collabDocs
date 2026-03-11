@@ -120,9 +120,3 @@ return (
 )
 
 }
-
-
- // tasks --
- // 2. add listener for remaining emits from server to show toast .
- // 3. check env variable usage and prefix with NEXT_PUBLIC_ on next js app .
- // 4. reduce editor padding on small screen .

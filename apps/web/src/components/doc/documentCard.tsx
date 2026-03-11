@@ -73,8 +73,8 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
             </AlertDialogHeader>
 
             <AlertDialogFooter>
-              {/* CLOSE / CANCEL */}
-              <AlertDialogCancel>
+              
+              <AlertDialogCancel className="cursor-pointer">
                 Close
               </AlertDialogCancel>
 
@@ -87,7 +87,7 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
                   error:"Failed to delete document."
                  })
                 }
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-red-600 hover:bg-red-700 cursor-pointer "
               >
                 Delete
               </AlertDialogAction>

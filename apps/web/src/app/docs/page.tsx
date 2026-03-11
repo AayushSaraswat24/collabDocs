@@ -78,7 +78,7 @@ export default function DocsPage() {
   }
 
   return (
-    <div className="sm:p-6 p-4 flex-1">
+    <div className="sm:p-6 p-4 flex-1 ">
 
       <div className="mb-4 gap-2 flex items-center justify-between ">
         <h1 className="sm:text-lg  font-semibold">
