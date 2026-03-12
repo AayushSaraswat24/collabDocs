@@ -9,8 +9,6 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl
 
-  const publicRoutes = ["/", "/signin"]
-
     const isPublic = pathname === "/" || pathname === "/signin"
 
   if (!sessionToken && !isPublic) {

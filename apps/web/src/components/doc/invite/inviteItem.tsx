@@ -53,6 +53,7 @@ export function InviteItem({
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
         <Button
           size="sm"
+          className="cursor-pointer"
           variant="outline"
           disabled={loading}
           onClick={() => onReject(inviteId)}
@@ -61,6 +62,7 @@ export function InviteItem({
         </Button>
         <Button
           size="sm"
+          className="cursor-pointer"
           disabled={loading}
           onClick={() => onAccept(inviteId)}
         >

@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useSocketConnection } from "@/hooks/useSocketConnection";
-import { useDocumentJoin } from "@/hooks/useDocumentJoin";
-import { useYjsSocketSync } from "@/hooks/useYjsSocketSync";
+import { UseSocketConnection } from "@/hooks/useSocketConnection";
+import { UseDocumentJoin } from "@/hooks/useDocumentJoin";
+import { UseYjsSocketSync } from "@/hooks/useYjsSocketSync";
 import * as Y from "yjs";
 import { useMemo, useEffect, useState } from "react";
 import { Editor } from "@/components/editor/editor";
@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 
 export default function DocPage() {
   const { id } = useParams();
-  const socketStatus = useSocketConnection();
+  const socketStatus = UseSocketConnection();
   const {data:session}=useSession();
 
   const [ydoc, setYdoc] = useState(() => new Y.Doc());
@@ -21,7 +21,7 @@ export default function DocPage() {
   const awareness = useMemo(() => new Awareness(ydoc), [ydoc]);
   const cursorColor = useMemo(()=> getRandomColor(),[]);
 
-  const joinState = useDocumentJoin(
+  const joinState = UseDocumentJoin(
     id as string,
     socketStatus === "connected",
     ydoc
@@ -43,7 +43,7 @@ export default function DocPage() {
 
 const ready = joinState.status === "ready" && !!user.id;
 
-useYjsSocketSync(ready ? joinState.documentId : "", ydoc,setYdoc ,awareness);
+UseYjsSocketSync(ready ? joinState.documentId : "", ydoc,setYdoc ,awareness);
 
   useEffect(() => {
     return () => {
@@ -103,7 +103,7 @@ if (joinState.status === "error") {
 if (joinState.status !== "ready") return null;
 
 return (
-  <div className="flex flex-col flex-1 min-h-0 bg-neutral-50 dark:bg-neutral-950 transition-colors duration-200">
+  <div className="flex flex-col flex-1 min-h-0  transition-colors duration-200">
 
         {session?.user && (
           <Editor
@@ -120,3 +120,7 @@ return (
 )
 
 }
+
+// middleware change to proxy read docs 
+// generate the favicon and delete the old public 
+// deploy it 

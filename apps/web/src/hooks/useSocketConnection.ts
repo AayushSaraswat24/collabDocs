@@ -9,7 +9,7 @@ export type SocketStatus =
   | "error"
   | "disconnected";
 
-export function useSocketConnection() {
+export function UseSocketConnection() {
   const [status, setStatus] = useState<SocketStatus>("connecting");
 
   useEffect(() => {
@@ -21,7 +21,6 @@ export function useSocketConnection() {
     const onConnect = () => setStatus("connected");
     const onDisconnect = () =>{
       setStatus("disconnected");
-      console.log(`Socket dissconnect `)
     }
     const onConnectError = () => setStatus("error");
 

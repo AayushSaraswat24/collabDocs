@@ -66,7 +66,7 @@ export default function Toolbar({ editor }: Props) {
   const hasSelection = editor.state.selection.from !== editor.state.selection.to
   
   const aiBtn =
-  ` px-2 py-1 text-xs rounded transition-colors cursor-pointer text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent `
+  ` px-2 py-1 text-xs rounded transition-colors cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent `
 
   const s = 14
 
@@ -77,7 +77,7 @@ export default function Toolbar({ editor }: Props) {
       overflow-x-auto
       whitespace-nowrap
       px-4 py-2
-      bg-white dark:bg-neutral-900
+     
       border-b border-neutral-100 dark:border-neutral-800
       sticky top-0 z-40
     ">

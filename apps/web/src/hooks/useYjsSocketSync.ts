@@ -7,7 +7,7 @@ import { Awareness } from "y-protocols/awareness";
 import {encodeAwarenessUpdate,applyAwarenessUpdate,removeAwarenessStates} from "y-protocols/awareness";
 import { toast } from "sonner";
 
-export function useYjsSocketSync(documentId:string ,ydoc:Y.Doc, setYdoc:React.Dispatch<React.SetStateAction<Y.Doc>>,awareness:Awareness) {
+export function UseYjsSocketSync(documentId:string ,ydoc:Y.Doc, setYdoc:React.Dispatch<React.SetStateAction<Y.Doc>>,awareness:Awareness) {
 
     useEffect(()=>{
 

@@ -25,7 +25,8 @@ export const AiPlaceholder = Node.create({
       mergeAttributes(HTMLAttributes, {
         "data-ai-placeholder": "",
         contenteditable: "false",
-        class: "text-neutral-400 italic",
+        spellcheck: "false", 
+        class: "text-neutral-400 italic pointer-events-none select-none",
       }),
       0,
     ]

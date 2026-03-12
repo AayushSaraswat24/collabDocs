@@ -23,11 +23,11 @@ interface OptionBarProps {
 
 export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
 
-  if(!editor) return ;
+  if(!editor) return null ;
 
   return (
     <header 
-     className="flex items-center justify-between h-14 px-2 sm:px-5 bg-white dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 shrink-0 overflow-x-auto">
+     className="flex items-center justify-between h-14 px-2 sm:px-5  border-b border-neutral-100 dark:border-neutral-800 shrink-0 overflow-x-auto">
 
       <div className="flex items-center gap-2 shrink-0">
 
@@ -38,7 +38,7 @@ export function OptionBar({ joinState,editor,ydoc }: OptionBarProps) {
       <div className="hidden sm:flex flex-col items-center gap-0.5 min-w-0 flex-1 px-2">
         <h1 className="
           text-sm font-semibold
-          text-neutral-800 dark:text-neutral-100
+         
           truncate max-w-35 sm:max-w-55 md:max-w-[320px]
           tracking-tight
           font-['DM_Sans',sans-serif]

@@ -17,7 +17,7 @@ type JoinState =
     }
   | { status: "error"; error: string };
 
-export function useDocumentJoin(
+export function UseDocumentJoin(
   documentId: string,
   enabled: boolean,
   ydoc: Y.Doc
