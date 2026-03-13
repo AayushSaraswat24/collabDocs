@@ -2,8 +2,12 @@
   "name": "@collabdoc/db",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
