@@ -1,9 +1,9 @@
 import { Server, Socket } from "socket.io";
 import { prisma } from "@collabdoc/db";
 import {Role} from "@collabdoc/db";
-import { kickUserFromRoom } from "../room.utils";
+import { kickUserFromRoom } from "../room.utils.js";
 import * as Y from "yjs"
-import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser, removeUserByUserId} from "../../services/document.service";
+import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser, removeUserByUserId} from "../../services/document.service.js";
 
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 

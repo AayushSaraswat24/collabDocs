@@ -7,8 +7,8 @@ dotenv.config({
 
 
 import { createServer } from "http";
-import { app } from "./app";
-import { setupSocket } from "./socket/index";
+import {app} from "./app.js"
+import { setupSocket } from "./socket/index.js";
 
 const PORT = process.env.PORT || 4000;
 

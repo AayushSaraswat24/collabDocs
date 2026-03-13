@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { registerDocumentHandlers } from "./document.listeners";
-import {removeUser} from "../../services/document.service";
+import { registerDocumentHandlers } from "./document.listeners.js";
+import {removeUser} from "../../services/document.service.js";
 
 
 export function registerConnectionHandlers(io: Server) {

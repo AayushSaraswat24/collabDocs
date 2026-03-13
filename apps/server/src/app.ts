@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { authenticate } from "./middleware/auth";
-import router from "./routes/version";
-import documentDeleteRouter from "./routes/deleteDocument";
+import { authenticate } from "./middleware/auth.js";
+import router from "./routes/version.js";
+import documentDeleteRouter from "./routes/deleteDocument.js";
 
 export const app = express();
 

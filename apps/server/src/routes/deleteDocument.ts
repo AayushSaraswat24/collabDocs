@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {prisma} from "@collabdoc/db"
-import { destroyDocument } from "../services/document.service";
-import { getIO } from "../socket/index";
+import { destroyDocument } from "../services/document.service.js";
+import { getIO } from "../socket/index.js";
 
 const documentDeleteRouter=Router();
 

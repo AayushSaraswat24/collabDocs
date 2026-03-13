@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import type { Server as HttpServer } from "http";
-import { registerConnectionHandlers } from "./listeners/index";
-import { socketAuthMiddleware } from "./middleware/auth.middleware";
+import { registerConnectionHandlers } from "./listeners/index.js";
+import { socketAuthMiddleware } from "./middleware/auth.middleware.js";
 
 let io: Server | null = null;
 
