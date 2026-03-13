@@ -120,7 +120,3 @@ return (
 )
 
 }
-
-// middleware change to proxy read docs 
-// generate the favicon and delete the old public 
-// deploy it 
