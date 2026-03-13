@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {prisma, Role} from "@collabdoc/db"
 import { getIO } from "../socket/index.js";
-import { revertDocument } from "../services/document.service";
+import { revertDocument } from "../services/document.service.js";
 
 const router=Router();
 
