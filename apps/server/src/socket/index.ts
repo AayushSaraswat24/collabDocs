@@ -7,7 +7,6 @@ let io: Server | null = null;
 
 export function setupSocket(httpServer: HttpServer) {
   if (io) {
-    console.log("⚠️ Socket.io already initialized");
     return io;
   }
 

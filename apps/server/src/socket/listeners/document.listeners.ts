@@ -284,7 +284,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
    const activeUsers=getActiveUsers(documentId);
 
-   const users=collaboration.map((collab)=>({
+   const users=collaboration.map((collab:any)=>({
     id:collab.user.id,
     name:collab.user.name,
     email:collab.user.email,
