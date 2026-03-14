@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
-import { Role,CollaborationInviteStatus } from "../generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client.js";
+import { Role,CollaborationInviteStatus } from "../generated/prisma/enums.js";
 
 declare global {
   var prisma: PrismaClient | undefined;
