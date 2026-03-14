@@ -7,11 +7,7 @@
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@collabdoc/db": ["../../packages/db/dist/index.js"]
-    },
-    "baseUrl": "."
+    "skipLibCheck": true
   },
   "include": ["src"]
 }
