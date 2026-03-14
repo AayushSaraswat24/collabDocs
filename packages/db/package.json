@@ -1,22 +1,33 @@
 {
   "name": "@collabdoc/db",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-   "exports": {
-    ".": "./dist/index.js"
+  "main": "./dist/src/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
+    }
   },
-
-  "types": "./dist/index.d.ts",
-
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "generated"
+  ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "clean": "rimraf dist",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
+    "build": "npm run prisma:generate && npm run clean && tsc",
+    "dev": "npm run prisma:generate && npm run clean && tsc --watch",
+    "typecheck": "tsc --noEmit"
   },
-  
   "devDependencies": {
     "@types/node": "^25.0.10",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0",
+    "rimraf": "^6.0.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

@@ -130,6 +130,7 @@ export function InviteUserDialog({ documentId }: { documentId: string }) {
 
           <DialogFooter>
             <Button
+             className="cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
@@ -138,7 +139,7 @@ export function InviteUserDialog({ documentId }: { documentId: string }) {
               Cancel
             </Button>
 
-            <Button type="submit" disabled={loading}>
+            <Button className="cursor-pointer" type="submit" disabled={loading}>
               {loading ? "Inviting..." : "Invite User"}
             </Button>
           </DialogFooter>

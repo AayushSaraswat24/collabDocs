@@ -7,6 +7,17 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "echo \"use app-level dev scripts\""
+    "dev": "concurrently -k -n DB,SERVER,WEB -c cyan,green,magenta \"npm:dev:db\" \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:db": "npm run dev -w @collabdoc/db",
+    "dev:server": "npm run dev -w @collabdoc/server",
+    "dev:web": "npm run dev -w @collabdoc/web",
+    "build": "npm run build -w @collabdoc/db && npm run build -w @collabdoc/server && npm run build -w @collabdoc/web",
+    "start": "concurrently -k -n SERVER,WEB -c green,magenta \"npm:start:server\" \"npm:start:web\"",
+    "start:server": "npm run start -w @collabdoc/server",
+    "start:web": "npm run start -w @collabdoc/web",
+    "typecheck": "npm run typecheck -w @collabdoc/db && npm run typecheck -w @collabdoc/server && npm run typecheck -w @collabdoc/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
