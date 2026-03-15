@@ -8,7 +8,7 @@ export async function socketAuthMiddleware(
   try {
 
     const cookieHeader = socket.request.headers.cookie;
-
+    console.log("Socket cookies:", socket.request.headers.cookie);
     if (!cookieHeader) {
       return next(new Error("No cookies"));
     }
@@ -44,7 +44,7 @@ export async function socketAuthMiddleware(
 
     socket.data.userId = session.userId;
     socket.data.userName=user.name;
- 
+    console.log(`socket middleware pass`)
     next();
   } catch (error) {
     console.error("Socket authentication error:", error);

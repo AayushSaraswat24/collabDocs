@@ -15,6 +15,18 @@ export const authOptions:NextAuthOptions={
         strategy:"database"
     },
 
+    cookies: {
+        sessionToken: {
+        name: "__Secure-next-auth.session-token",
+        options: {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            path: "/",
+        },
+        },
+    },
+
     callbacks:{
         async session({session,user}){
 
