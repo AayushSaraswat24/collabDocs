@@ -44,6 +44,7 @@ export function ColloboratorsList({ owner,documentId }: Props) {
   }, [open, socket])
 
   const getActiveUsers = () => {
+    if(!socket.connected) return ;
     setLoading(true)
 
     socket.emit("document:get:activeUsers", {}, (res: any) => {

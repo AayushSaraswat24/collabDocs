@@ -5,7 +5,7 @@ import {removeUser} from "../../services/document.service.js";
 
 export function registerConnectionHandlers(io: Server) {
   io.on("connection", (socket: Socket) => {
-
+    console.log(`${socket.id} connected for ${socket.data.userName}`)
     registerDocumentHandlers(io,socket);
 
     socket.on("disconnect",async () => {

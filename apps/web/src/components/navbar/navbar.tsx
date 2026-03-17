@@ -11,7 +11,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 h-14 border-b bg-background">
-      <nav className="mx-auto flex h-full max-w-7xl items-center px-4">
+      <nav className="flex h-full items-center px-4 lg:px-8">
  
         <NavbarLeft />
 

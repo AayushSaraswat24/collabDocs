@@ -7,43 +7,24 @@ export async function socketAuthMiddleware(
 ) {
   try {
 
-    const cookieHeader = socket.request.headers.cookie;
-    console.log("Socket cookies:", socket.request.headers.cookie);
-    if (!cookieHeader) {
-      return next(new Error("No cookies"));
-    }
-
-
-    const cookies = Object.fromEntries(
-      cookieHeader.split("; ").map(c => c.split("="))
-    );
-
-    const sessionToken =
-      cookies["next-auth.session-token"] ||
-      cookies["__Secure-next-auth.session-token"];
-
+    const sessionToken= socket.handshake.auth.sessionToken;
+    console.log(`socket middleware sessionToken ${sessionToken}`)
+    
     if (!sessionToken) {
       return next(new Error("No session token"));
     }
 
     const session = await prisma.session.findUnique({
       where: { sessionToken },
+      include: { user: true }
     });
 
     if (!session || session.expires < new Date()) {
       return next(new Error("Session expired"));
     }
 
-    const user= await prisma.user.findUnique({
-      where:{id:session.userId}
-    });
-
-    if(!user){
-      return next(new Error("User not found"));
-    }
-
     socket.data.userId = session.userId;
-    socket.data.userName=user.name;
+    socket.data.userName=session.user.name;
     console.log(`socket middleware pass`)
     next();
   } catch (error) {

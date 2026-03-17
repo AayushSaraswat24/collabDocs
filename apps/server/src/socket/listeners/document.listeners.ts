@@ -3,7 +3,7 @@ import { prisma } from "@collabdoc/db";
 import {Role} from "@collabdoc/db";
 import { kickUserFromRoom } from "../room.utils.js";
 import * as Y from "yjs"
-import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUser, removeUserByUserId} from "../../services/document.service.js";
+import { applyYjsUpdate, loadDocument ,getActiveUsers , addUser, removeUserByUserId} from "../../services/document.service.js";
 
 export function registerDocumentHandlers(io: Server, socket: Socket) {
 
@@ -255,7 +255,7 @@ socket.on("document:kick",async ({targetUserId},ack)=>{
 
   socket.on("document:get:activeUsers" , async(req,ack) =>{
     const {documentId,userId}=socket.data;
-
+  
     if(!documentId || !userId ){
       return ack({
         ok:false,

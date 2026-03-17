@@ -100,6 +100,7 @@ export function CreateDocumentDialog({
           <Button
             onClick={handleCreate}
             disabled={loading}
+            className="cursor-pointer"
           >
             {loading ? "Creating..." : "Create"}
           </Button>

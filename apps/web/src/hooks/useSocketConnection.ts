@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { socket } from "@/lib/socket";
+import {
+  connectSocket,
+  releaseSocketConnection,
+  retainSocketConnection,
+  socket,
+} from "@/lib/socket";
 
 export type SocketStatus =
   | "connecting"
@@ -10,29 +15,41 @@ export type SocketStatus =
   | "disconnected";
 
 export function UseSocketConnection() {
-  const [status, setStatus] = useState<SocketStatus>("connecting");
+  const [status, setStatus] = useState<SocketStatus>(
+    socket.connected ? "connected" : "connecting"
+  );
 
   useEffect(() => {
-
-    if(!socket.connected){
-      socket.connect();
-    }
+    let mounted = true;
+    retainSocketConnection();
 
     const onConnect = () => setStatus("connected");
-    const onDisconnect = () =>{
+    const onDisconnect = () => {
       setStatus("disconnected");
-    }
+    };
     const onConnectError = () => setStatus("error");
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("connect_error", onConnectError);
 
+    if (socket.connected) {
+      setStatus("connected");
+    } else {
+      setStatus("connecting");
+      connectSocket().catch(() => {
+        if (mounted) {
+          setStatus("error");
+        }
+      });
+    }
+
     return () => {
+      mounted = false;
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("connect_error", onConnectError);
-      socket.disconnect();
+      releaseSocketConnection();
     };
   }, []);
 

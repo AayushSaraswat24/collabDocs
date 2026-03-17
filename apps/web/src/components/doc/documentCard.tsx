@@ -29,7 +29,7 @@ export function DocumentCard({ doc, onClick, onDelete }: DocumentCardProps) {
   return (
     <div
       onClick={onClick}
-      className="group relative cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition hover:shadow-md hover:border-primary/50"
+      className="group relative cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition hover:shadow-md hover:border-primary/50 "
     >
 
     {!doc.isOwner && (

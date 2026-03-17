@@ -5,19 +5,7 @@ import { prisma } from "@collabdoc/db";
 
 export async function authenticate(req:Request,res:Response,next:NextFunction){
     try{
-        const cookieHeader= req.headers.cookie;
-
-        if(!cookieHeader){
-            return res.status(401).json({success:false,message:"No cookies"});
-        }
-
-        const cookies = Object.fromEntries(
-          cookieHeader.split("; ").map((c) => c.split("="))
-        );
-
-        const sessionToken =
-        cookies["next-auth.session-token"] ||
-        cookies["__Secure-next-auth.session-token"];
+       const sessionToken = req.headers["x-session-token"] as string;
 
         if (!sessionToken) {
             return res

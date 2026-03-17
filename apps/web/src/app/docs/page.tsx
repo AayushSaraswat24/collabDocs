@@ -97,7 +97,7 @@ export default function DocsPage() {
           No documents yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 w-full">
           {documents.map((doc) => (
             <DocumentCard
               key={doc.id}
