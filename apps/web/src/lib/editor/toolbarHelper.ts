@@ -15,12 +15,15 @@ export async function handleAI(
   try {
     start()
 
-    // Insert placeholder
+    // Insert placeholder with initial empty paragraph to prevent placeholder from showing
     editor
       .chain()
       .focus()
       .deleteRange({ from, to })
-      .insertContentAt(from, { type: "aiPlaceholder" })
+      .insertContentAt(from, { 
+        type: "aiPlaceholder",
+        content: [{ type: "paragraph" }]
+      })
       .run()
 
     const res = await fetch(route, {

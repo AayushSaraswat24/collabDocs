@@ -5,7 +5,7 @@ export const AiPlaceholder = Node.create({
 
   group: "block",
 
-  content: "text*",
+  content: "paragraph*",
 
   selectable: false,
 
@@ -26,7 +26,7 @@ export const AiPlaceholder = Node.create({
         "data-ai-placeholder": "",
         contenteditable: "false",
         spellcheck: "false", 
-        class: "text-neutral-400 italic pointer-events-none select-none",
+        class: "text-neutral-400 italic pointer-events-none select-none min-h-6",
       }),
       0,
     ]

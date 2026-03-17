@@ -89,6 +89,9 @@ export function Editor({ ydoc, awareness, readOnly, user,joinState }: EditorProp
 
       Placeholder.configure({
         placeholder: "Start typing here...",
+        emptyEditorClass: "is-editor-empty",
+        emptyNodeClass: "is-empty",
+        showOnlyCurrent: true,
       }),
 
     ],
