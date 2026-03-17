@@ -177,7 +177,7 @@ Includes:
 
 ```bash
 # Clone the repo
-git clone <your-repo-url>
+git clone https://github.com/AayushSaraswat24/collabDocs/
 
 # Install dependencies
 npm install
